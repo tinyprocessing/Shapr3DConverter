@@ -3,9 +3,11 @@ import UIKit
 
 class ApplicationCoordinator: Coordinator<Void> {
     private let router: Router
+    private let documentsCoordinator: DocumentsCoordinator
 
     init?(router: Router) {
         self.router = router
+        documentsCoordinator = DocumentsCoordinator(router: router)
         super.init()
     }
 
@@ -15,15 +17,8 @@ class ApplicationCoordinator: Coordinator<Void> {
     }
 
     private func launch() {
-        configureVCs()
-        load()
+        let controller = documentsCoordinator.exportViewController()
+        documentsCoordinator.start()
+        router.willRouteWith(controller)
     }
-
-    private func configureVCs() {
-        let viewController = UIViewController()
-        viewController.view?.backgroundColor = .white
-        router.willRouteWith(viewController)
-    }
-
-    private func load() {}
 }

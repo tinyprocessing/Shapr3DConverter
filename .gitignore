@@ -1,0 +1,18 @@
+## Build generated
+build/
+node_modules/
+DerivedData
+xcodebuild.log
+xcode_core_build.log
+
+
+## Xcconfig config files
+*-Developer.xcconfig
+Configuration/CI.xcconfig
+PackageSettings.json
+
+## Obj-C/Swift specific
+*.hmap
+*.ipa
+
+Pods/

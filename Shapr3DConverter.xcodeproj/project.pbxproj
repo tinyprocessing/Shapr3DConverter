@@ -12,15 +12,17 @@
 		301974D42D53A40900BD3FC4 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974D32D53A40900BD3FC4 /* ApplicationCoordinator.swift */; };
 		301974A02D539B2800BD3FC4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3019749F2D539B2800BD3FC4 /* Assets.xcassets */; };
 		301974EE2D53A4FC00BD3FC4 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974ED2D53A4FC00BD3FC4 /* BaseViewController.swift */; };
+		301975142D53FC1800BD3FC4 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975132D53FC1800BD3FC4 /* CircularProgressView.swift */; };
 		301974F32D53A54D00BD3FC4 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974F22D53A54D00BD3FC4 /* Colors.swift */; };
 		301974E32D53A46A00BD3FC4 /* CombineAsyncStreamBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974DC2D53A46A00BD3FC4 /* CombineAsyncStreamBridge.swift */; };
 		301974E52D53A46A00BD3FC4 /* CombineUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974DE2D53A46A00BD3FC4 /* CombineUtils.swift */; };
 		301974F12D53A52900BD3FC4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974F02D53A52900BD3FC4 /* Constants.swift */; };
-		3019750E2D53CBDE00BD3FC4 /* ConverEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750D2D53CBDE00BD3FC4 /* ConverEngine.swift */; };
 		301974DF2D53A46A00BD3FC4 /* Coordinatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974D72D53A46A00BD3FC4 /* Coordinatable.swift */; };
 		301974E22D53A46A00BD3FC4 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974DA2D53A46A00BD3FC4 /* Coordinator.swift */; };
-		301975102D53DD3700BD3FC4 /* DocumentActionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750F2D53DD3700BD3FC4 /* DocumentActionSheetViewController.swift */; };
-		301975122D53E28300BD3FC4 /* DocumentConversionActionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975112D53E28300BD3FC4 /* DocumentConversionActionView.swift */; };
+		3019750E2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */; };
+		301975162D5406D700BD3FC4 /* DocumentConversionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */; };
+		301975122D53E28300BD3FC4 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975112D53E28300BD3FC4 /* DocumentDetailView.swift */; };
+		301975102D53DD3700BD3FC4 /* DocumentDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750F2D53DD3700BD3FC4 /* DocumentDetailViewController.swift */; };
 		301975092D53BDB300BD3FC4 /* DocumentGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975082D53BDB300BD3FC4 /* DocumentGridCell.swift */; };
 		301975052D53A8DA00BD3FC4 /* DocumentGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */; };
 		3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */; };
@@ -63,15 +65,17 @@
 		301974D32D53A40900BD3FC4 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
 		3019749F2D539B2800BD3FC4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		301974ED2D53A4FC00BD3FC4 /* BaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		301975132D53FC1800BD3FC4 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		301974F22D53A54D00BD3FC4 /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		301974DC2D53A46A00BD3FC4 /* CombineAsyncStreamBridge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineAsyncStreamBridge.swift; sourceTree = "<group>"; };
 		301974DE2D53A46A00BD3FC4 /* CombineUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CombineUtils.swift; sourceTree = "<group>"; };
 		301974F02D53A52900BD3FC4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
-		3019750D2D53CBDE00BD3FC4 /* ConverEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConverEngine.swift; sourceTree = "<group>"; };
 		301974D72D53A46A00BD3FC4 /* Coordinatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinatable.swift; sourceTree = "<group>"; };
 		301974DA2D53A46A00BD3FC4 /* Coordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
-		3019750F2D53DD3700BD3FC4 /* DocumentActionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentActionSheetViewController.swift; sourceTree = "<group>"; };
-		301975112D53E28300BD3FC4 /* DocumentConversionActionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConversionActionView.swift; sourceTree = "<group>"; };
+		3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConversionEngine.swift; sourceTree = "<group>"; };
+		301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConversionManager.swift; sourceTree = "<group>"; };
+		301975112D53E28300BD3FC4 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
+		3019750F2D53DD3700BD3FC4 /* DocumentDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailViewController.swift; sourceTree = "<group>"; };
 		301975082D53BDB300BD3FC4 /* DocumentGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentGridCell.swift; sourceTree = "<group>"; };
 		301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentGridViewController.swift; sourceTree = "<group>"; };
 		3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
@@ -194,11 +198,12 @@
 		301974D12D53A3EA00BD3FC4 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				301975172D54091400BD3FC4 /* CommonUI */,
 				301974EF2D53A51600BD3FC4 /* Constants */,
 				301974D22D53A3FD00BD3FC4 /* Coordinator */,
+				3019750C2D53CBC200BD3FC4 /* DocumentService */,
 				301974FD2D53A88000BD3FC4 /* Extensions */,
 				301974E62D53A4BD00BD3FC4 /* Router */,
-				3019750C2D53CBC200BD3FC4 /* Service */,
 				301974EB2D53A4EF00BD3FC4 /* UI */,
 				301974D52D53A45200BD3FC4 /* Utilities */,
 			);
@@ -255,7 +260,7 @@
 		301974EB2D53A4EF00BD3FC4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				301974EC2D53A4FC00BD3FC4 /* Base */,
+				301975192D540A0800BD3FC4 /* DocumentDetail */,
 				301975002D53A8AA00BD3FC4 /* Documents */,
 			);
 			path = UI;
@@ -317,8 +322,6 @@
 		301975022D53A8BC00BD3FC4 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3019750F2D53DD3700BD3FC4 /* DocumentActionSheetViewController.swift */,
-				301975112D53E28300BD3FC4 /* DocumentConversionActionView.swift */,
 				301975082D53BDB300BD3FC4 /* DocumentGridCell.swift */,
 			);
 			path = Views;
@@ -332,12 +335,47 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
-		3019750C2D53CBC200BD3FC4 /* Service */ = {
+		3019750C2D53CBC200BD3FC4 /* DocumentService */ = {
 			isa = PBXGroup;
 			children = (
-				3019750D2D53CBDE00BD3FC4 /* ConverEngine.swift */,
+				3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */,
+				301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */,
 			);
-			path = Service;
+			path = DocumentService;
+			sourceTree = "<group>";
+		};
+		301975172D54091400BD3FC4 /* CommonUI */ = {
+			isa = PBXGroup;
+			children = (
+				301974EC2D53A4FC00BD3FC4 /* Base */,
+				301975182D54095D00BD3FC4 /* Common */,
+			);
+			path = CommonUI;
+			sourceTree = "<group>";
+		};
+		301975182D54095D00BD3FC4 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				301975132D53FC1800BD3FC4 /* CircularProgressView.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		301975192D540A0800BD3FC4 /* DocumentDetail */ = {
+			isa = PBXGroup;
+			children = (
+				3019751A2D540A1300BD3FC4 /* Views */,
+				3019750F2D53DD3700BD3FC4 /* DocumentDetailViewController.swift */,
+			);
+			path = DocumentDetail;
+			sourceTree = "<group>";
+		};
+		3019751A2D540A1300BD3FC4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				301975112D53E28300BD3FC4 /* DocumentDetailView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -476,15 +514,17 @@
 				301974CB2D539C9B00BD3FC4 /* AppDelegate.swift in Sources */,
 				301974D42D53A40900BD3FC4 /* ApplicationCoordinator.swift in Sources */,
 				301974EE2D53A4FC00BD3FC4 /* BaseViewController.swift in Sources */,
+				301975142D53FC1800BD3FC4 /* CircularProgressView.swift in Sources */,
 				301974F32D53A54D00BD3FC4 /* Colors.swift in Sources */,
 				301974E32D53A46A00BD3FC4 /* CombineAsyncStreamBridge.swift in Sources */,
 				301974E52D53A46A00BD3FC4 /* CombineUtils.swift in Sources */,
 				301974F12D53A52900BD3FC4 /* Constants.swift in Sources */,
-				3019750E2D53CBDE00BD3FC4 /* ConverEngine.swift in Sources */,
 				301974DF2D53A46A00BD3FC4 /* Coordinatable.swift in Sources */,
 				301974E22D53A46A00BD3FC4 /* Coordinator.swift in Sources */,
-				301975102D53DD3700BD3FC4 /* DocumentActionSheetViewController.swift in Sources */,
-				301975122D53E28300BD3FC4 /* DocumentConversionActionView.swift in Sources */,
+				3019750E2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift in Sources */,
+				301975162D5406D700BD3FC4 /* DocumentConversionManager.swift in Sources */,
+				301975122D53E28300BD3FC4 /* DocumentDetailView.swift in Sources */,
+				301975102D53DD3700BD3FC4 /* DocumentDetailViewController.swift in Sources */,
 				301975092D53BDB300BD3FC4 /* DocumentGridCell.swift in Sources */,
 				301975052D53A8DA00BD3FC4 /* DocumentGridViewController.swift in Sources */,
 				3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */,

@@ -3,7 +3,6 @@ import UIKit
 
 protocol DocumentGridViewControllerDelegate: AnyObject {
     func didTapAddItem()
-    func didSelect(document: DocumentItem)
 }
 
 final class DocumentGridViewController: BaseViewController {
@@ -12,6 +11,17 @@ final class DocumentGridViewController: BaseViewController {
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, DocumentItem>!
     private var cancellables = Set<AnyCancellable>()
+    private let converterManager: DocumentConversionManager
+
+    init(converterManager: DocumentConversionManager) {
+        self.converterManager = converterManager
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
@@ -112,6 +122,25 @@ final class DocumentGridViewController: BaseViewController {
     }
 }
 
+extension DocumentGridViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        let actionSheet = DocumentDetailViewController(document: item,
+                                                       conversionManager: converterManager)
+        if traitCollection.userInterfaceIdiom == .pad {
+            actionSheet.modalPresentationStyle = .popover
+            if let cell = collectionView.cellForItem(at: indexPath) {
+                actionSheet.popoverPresentationController?.sourceView = cell
+                actionSheet.popoverPresentationController?.sourceRect = cell.bounds
+                actionSheet.popoverPresentationController?.permittedArrowDirections = [.any]
+            }
+        } else {
+            actionSheet.modalPresentationStyle = .pageSheet
+        }
+        present(actionSheet, animated: true)
+    }
+}
+
 extension DocumentGridViewController {
     fileprivate struct Config {
         static let itemHeight: CGFloat = 150
@@ -139,13 +168,5 @@ extension DocumentGridViewController {
 extension DocumentGridViewController {
     fileprivate enum Section {
         case main
-    }
-}
-
-extension DocumentGridViewController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        if let item = dataSource.itemIdentifier(for: indexPath) {
-            documentDelegate?.didSelect(document: item)
-        }
     }
 }

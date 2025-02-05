@@ -7,12 +7,12 @@ class DocumentsCoordinator: Coordinator<Void> {
     private let viewController: DocumentGridViewController
     private var cancellables = Set<AnyCancellable>()
     private let itemsSubject = CurrentValueSubject<[DocumentItem], Never>([])
-    private let converter = FileConverter()
+    private let converterManager = DocumentConversionManager(fileConverter: DocumentConversionEngine())
     private var fileSelectionCompletion: ((URL) -> Void)?
 
     init(router: Router) {
         self.router = router
-        viewController = DocumentGridViewController()
+        viewController = DocumentGridViewController(converterManager: converterManager)
         super.init()
         bindViewModel()
         viewController.documentDelegate = self
@@ -45,7 +45,9 @@ class DocumentsCoordinator: Coordinator<Void> {
                                             fileURL: sourceURL,
                                             fileName: sourceURL.lastPathComponent,
                                             fileSize: 0,
-                                            conversionStates: [.obj: .idle, .step: .idle, .stl: .idle])
+                                            conversionStates: [.obj: .idle,
+                                                               .step: .idle,
+                                                               .stl: .idle])
                     newItems.append(item)
                     self.itemsSubject.send(newItems)
                 }
@@ -65,16 +67,24 @@ class DocumentsCoordinator: Coordinator<Void> {
 extension DocumentsCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let selectedURL = urls.first else { return }
-        fileSelectionCompletion?(selectedURL)
+
+        let fileManager = FileManager.default
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let destinationURL = documentsDirectory.appendingPathComponent(selectedURL.lastPathComponent)
+
+        do {
+            if fileManager.fileExists(atPath: destinationURL.path) {
+                try fileManager.removeItem(at: destinationURL)
+            }
+            try fileManager.copyItem(at: selectedURL, to: destinationURL)
+            fileSelectionCompletion?(destinationURL)
+        } catch {
+            print("Error copying file to Documents directory: \(error.localizedDescription)")
+        }
     }
 }
 
 extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
-    func didSelect(document: DocumentItem) {
-        let sheetVC = DocumentActionSheetViewController(document: document, fileConverter: converter)
-        viewController.present(sheetVC, animated: true, completion: nil)
-    }
-
     func didTapAddItem() {
         selectFileAndConvert()
     }

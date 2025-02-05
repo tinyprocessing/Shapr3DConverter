@@ -1,14 +1,29 @@
 import Combine
 import UIKit
 
+protocol DocumentGridViewControllerDelegate: AnyObject {
+    func didTapAddItem()
+}
+
 final class DocumentGridViewController: BaseViewController {
+    weak var documentDelegate: DocumentGridViewControllerDelegate?
+
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, DocumentItem>!
     private var cancellables = Set<AnyCancellable>()
 
+    private lazy var addButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(Config.plusImage, for: .normal)
+        button.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        setupAddButton()
         setupCollectionView()
         setupDataSource()
     }
@@ -16,6 +31,19 @@ final class DocumentGridViewController: BaseViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         collectionView.collectionViewLayout = createLayout()
+    }
+
+    private func setupAddButton() {
+        view.addSubview(addButton)
+
+        NSLayoutConstraint.activate([
+            addButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+            addButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16)
+        ])
+    }
+
+    @objc private func addButtonTapped() {
+        documentDelegate?.didTapAddItem()
     }
 
     private func setupCollectionView() {
@@ -26,7 +54,7 @@ final class DocumentGridViewController: BaseViewController {
         view.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.topAnchor.constraint(equalTo: addButton.bottomAnchor, constant: Config.buttonOffset),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
@@ -88,6 +116,12 @@ extension DocumentGridViewController {
         static let interItemSpacing: CGFloat = 10
         static let interGroupSpacing: CGFloat = 10
         static let sectionInsets = NSDirectionalEdgeInsets(top: 10, leading: 16, bottom: 10, trailing: 16)
+        static let buttonOffset: CGFloat = 10
+        static let imageConfig = UIImage.SymbolConfiguration(pointSize: 24, weight: .bold)
+        static let plusImage = UIImage(
+            systemName: "plus.circle.fill",
+            withConfiguration: imageConfig
+        )?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
 
         static func columns(for width: CGFloat) -> Int {
             switch width {

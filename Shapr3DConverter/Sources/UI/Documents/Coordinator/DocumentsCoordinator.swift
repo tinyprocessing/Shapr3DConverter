@@ -13,6 +13,7 @@ class DocumentsCoordinator: Coordinator<Void> {
         viewController = DocumentGridViewController()
         super.init()
         bindViewModel()
+        viewController.documentDelegate = self
     }
 
     override func start() {
@@ -39,5 +40,11 @@ class DocumentsCoordinator: Coordinator<Void> {
         var newItems = itemsSubject.value
         newItems.append(contentsOf: (1...5).map { DocumentItem(id: UUID(), title: "New File \($0)") })
         itemsSubject.send(newItems)
+    }
+}
+
+extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
+    func didTapAddItem() {
+        addMoreItems()
     }
 }

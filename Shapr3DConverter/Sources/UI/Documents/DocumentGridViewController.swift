@@ -3,6 +3,7 @@ import UIKit
 
 protocol DocumentGridViewControllerDelegate: AnyObject {
     func didTapAddItem()
+    func didSelect(document: DocumentItem)
 }
 
 final class DocumentGridViewController: BaseViewController {
@@ -31,6 +32,7 @@ final class DocumentGridViewController: BaseViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         collectionView.collectionViewLayout = createLayout()
+        collectionView.delegate = self
     }
 
     private func setupAddButton() {
@@ -137,5 +139,13 @@ extension DocumentGridViewController {
 extension DocumentGridViewController {
     fileprivate enum Section {
         case main
+    }
+}
+
+extension DocumentGridViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if let item = dataSource.itemIdentifier(for: indexPath) {
+            documentDelegate?.didSelect(document: item)
+        }
     }
 }

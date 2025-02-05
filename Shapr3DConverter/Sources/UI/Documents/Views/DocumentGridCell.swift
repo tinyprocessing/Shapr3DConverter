@@ -1,7 +1,10 @@
+import Combine
 import UIKit
 
 final class DocumentCell: UICollectionViewCell {
     static let reuseIdentifier = Config.reuseIdentifier
+    private var document: DocumentItem?
+    private var cancellables = Set<AnyCancellable>()
 
     private let rectangleView: UIView = {
         let view = UIView()
@@ -44,7 +47,25 @@ final class DocumentCell: UICollectionViewCell {
     }
 
     func configure(with item: DocumentItem) {
-        titleLabel.text = item.title
+        titleLabel.text = item.fileName
+        document = item
+        guard let publisher = document?.$conversionStates else { return }
+        publisher
+            .map { states in
+                states.compactMap { format, state -> (ConversionFormat, Double)? in
+                    if case .converting(let progress) = state {
+                        return (format, progress)
+                    }
+                    return nil
+                }.first?.1 ?? 0
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] progress in
+                guard let self = self, progress > 0 else { return }
+                let updatedText = String(format: Self.Config.conversionTextFormat, item.fileName, progress * 100)
+                self.titleLabel.text = updatedText
+            }
+            .store(in: &cancellables)
     }
 }
 
@@ -57,5 +78,6 @@ extension DocumentCell {
         static let textColor: UIColor = .black
         static let rectangleHeight: CGFloat = 100
         static let titleTopPadding: CGFloat = 10
+        static let conversionTextFormat = "%@ %.0f%%"
     }
 }

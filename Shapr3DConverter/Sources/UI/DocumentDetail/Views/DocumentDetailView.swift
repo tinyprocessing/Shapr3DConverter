@@ -109,8 +109,10 @@ final class DocumentDetailView: UIView {
         switch state {
         case .idle:
             circularProgressView.progress = 0
+            circularProgressView.isHidden = true
             errorLabel.isHidden = true
         case .converting(let progress):
+            circularProgressView.isHidden = false
             circularProgressView.progress = CGFloat(progress)
             errorLabel.isHidden = true
         case .completed:

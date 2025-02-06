@@ -13,6 +13,11 @@ final class DocumentGridViewController: BaseViewController {
     private var cancellables = Set<AnyCancellable>()
     private let converterManager: DocumentConversionManager
 
+    private lazy var emptyStateView = EmptyStateView(
+        title: .localized(.empty_view_title),
+        description: .localized(.empty_view_subtitle)
+    )
+
     init(converterManager: DocumentConversionManager) {
         self.converterManager = converterManager
         super.init(nibName: nil, bundle: nil)
@@ -37,6 +42,7 @@ final class DocumentGridViewController: BaseViewController {
         setupAddButton()
         setupCollectionView()
         setupDataSource()
+        setupEmptyStateView()
     }
 
     override func viewWillLayoutSubviews() {
@@ -70,6 +76,17 @@ final class DocumentGridViewController: BaseViewController {
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+
+    private func setupEmptyStateView() {
+        view.addSubview(emptyStateView)
+
+        NSLayoutConstraint.activate([
+            emptyStateView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            emptyStateView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            emptyStateView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 20),
+            emptyStateView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor, constant: -20)
         ])
     }
 
@@ -119,6 +136,16 @@ final class DocumentGridViewController: BaseViewController {
         snapshot.appendSections([.main])
         snapshot.appendItems(items)
         dataSource.apply(snapshot, animatingDifferences: true)
+
+        updateEmptyStateVisibility(isEmpty: items.isEmpty)
+    }
+
+    private func updateEmptyStateVisibility(isEmpty: Bool) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            emptyStateView.isHidden = !isEmpty
+            collectionView.isHidden = isEmpty
+        }
     }
 }
 

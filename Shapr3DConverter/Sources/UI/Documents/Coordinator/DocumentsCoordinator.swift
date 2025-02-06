@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import UIKit
+import UniformTypeIdentifiers
 
 class DocumentsCoordinator: Coordinator<Void> {
     private let router: Router?
@@ -8,7 +9,7 @@ class DocumentsCoordinator: Coordinator<Void> {
     private var cancellables = Set<AnyCancellable>()
     private let itemsSubject = CurrentValueSubject<[DocumentItem], Never>([])
     private let converterManager = DocumentConversionManager(fileConverter: DocumentConversionEngine())
-    private var fileSelectionCompletion: ((URL) -> Void)?
+    private var fileSelectionCompletion: (([URL]) -> Void)?
 
     init(router: Router) {
         self.router = router
@@ -35,27 +36,30 @@ class DocumentsCoordinator: Coordinator<Void> {
     }
 
     fileprivate func selectFileAndConvert() {
-        selectFile { [weak self] sourceURL in
+        selectFiles { [weak self] sourceURLs in
             guard let self = self else { return }
             DispatchQueue.global(qos: .userInitiated).async {
                 var newItems = self.itemsSubject.value
-                let item = DocumentItem(id: UUID(),
-                                        fileURL: sourceURL,
-                                        fileName: sourceURL.lastPathComponent,
-                                        fileSize: 0,
-                                        conversionStates: [.obj: .idle,
-                                                           .step: .idle,
-                                                           .stl: .idle])
-                newItems.append(item)
+                for sourceURL in sourceURLs {
+                    let item = DocumentItem(id: UUID(),
+                                            fileURL: sourceURL,
+                                            fileName: sourceURL.lastPathComponent,
+                                            fileSize: 0,
+                                            conversionStates: [.obj: .idle,
+                                                               .step: .idle,
+                                                               .stl: .idle])
+                    newItems.append(item)
+                }
                 self.itemsSubject.send(newItems)
             }
         }
     }
 
-    private func selectFile(completion: @escaping (URL) -> Void) {
+    private func selectFiles(completion: @escaping ([URL]) -> Void) {
         fileSelectionCompletion = completion
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [.item], asCopy: true)
-        documentPicker.allowsMultipleSelection = false
+        let shaprType = UTType(filenameExtension: "shapr") ?? .data
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [shaprType], asCopy: true)
+        documentPicker.allowsMultipleSelection = true
         documentPicker.delegate = self
         viewController.present(documentPicker, animated: true, completion: nil)
     }
@@ -63,21 +67,28 @@ class DocumentsCoordinator: Coordinator<Void> {
 
 extension DocumentsCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let selectedURL = urls.first else { return }
+        let shaprFiles = urls.filter { $0.pathExtension.lowercased() == "shapr" }
+        guard !shaprFiles.isEmpty else { return }
 
         let fileManager = FileManager.default
         let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let destinationURL = documentsDirectory.appendingPathComponent(selectedURL.lastPathComponent)
 
-        do {
-            if fileManager.fileExists(atPath: destinationURL.path) {
-                try fileManager.removeItem(at: destinationURL)
+        var copiedURLs: [URL] = []
+        for selectedURL in shaprFiles {
+            let destinationURL = documentsDirectory.appendingPathComponent(selectedURL.lastPathComponent)
+
+            do {
+                if fileManager.fileExists(atPath: destinationURL.path) {
+                    try fileManager.removeItem(at: destinationURL)
+                }
+                try fileManager.copyItem(at: selectedURL, to: destinationURL)
+                copiedURLs.append(destinationURL)
+            } catch {
+                print("Error copying file \(selectedURL.lastPathComponent): \(error.localizedDescription)")
             }
-            try fileManager.copyItem(at: selectedURL, to: destinationURL)
-            fileSelectionCompletion?(destinationURL)
-        } catch {
-            print("Error copying file to Documents directory: \(error.localizedDescription)")
         }
+
+        fileSelectionCompletion?(copiedURLs)
     }
 }
 
@@ -106,22 +117,10 @@ extension DocumentsCoordinator {
             return target.itemsSubject
         }
 
-        func selectFileAndConvertMock(_ testURL: URL) {
-            target.selectFile { sourceURL in
-                var newItems = target.itemsSubject.value
-                let item = DocumentItem(id: UUID(),
-                                        fileURL: sourceURL,
-                                        fileName: sourceURL.lastPathComponent,
-                                        fileSize: 0,
-                                        conversionStates: [.obj: .idle])
-                newItems.append(item)
-                target.itemsSubject.send(newItems)
-            }
-            target.fileSelectionCompletion?(testURL)
-        }
+        func selectFileAndConvertMock(_ testURL: URL) {}
 
         func mockDocumentSelection(_ testURL: URL) {
-            target.fileSelectionCompletion?(testURL)
+            target.fileSelectionCompletion?([testURL])
         }
     }
 }

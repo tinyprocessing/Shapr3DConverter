@@ -3,6 +3,7 @@ import UIKit
 final class CircularProgressView: UIView {
     private let backgroundLayer = CAShapeLayer()
     private let progressLayer = CAShapeLayer()
+    private let size: CGSize
 
     var progress: CGFloat = 0 {
         didSet {
@@ -10,14 +11,15 @@ final class CircularProgressView: UIView {
         }
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(size: CGSize = .init(width: 30, height: 30)) {
+        self.size = size
+        super.init(frame: .zero)
         setupLayers()
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        setupLayers()
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setupLayers() {
@@ -39,7 +41,7 @@ final class CircularProgressView: UIView {
         super.layoutSubviews()
         let lineWidth = progressLayer.lineWidth
         let centerPoint = CGPoint(x: bounds.midX, y: bounds.midY)
-        let radius = min(30, 30) / 2 - lineWidth / 2
+        let radius = min(size.width, size.height) / 2 - lineWidth / 2
         let startAngle = -CGFloat.pi / 2
         let endAngle = startAngle + 2 * CGFloat.pi
         let circularPath = UIBezierPath(arcCenter: centerPoint,

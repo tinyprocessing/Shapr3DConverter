@@ -2,6 +2,8 @@ import Foundation
 
 enum LocalizedString: String {
     case title
+    case empty_view_title
+    case empty_view_subtitle
 }
 
 extension String {

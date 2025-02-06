@@ -27,6 +27,7 @@
 		301975052D53A8DA00BD3FC4 /* DocumentGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */; };
 		3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */; };
 		301975072D53A9C300BD3FC4 /* DocumentsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */; };
+		3019751F2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */; };
 		301974F92D53A83400BD3FC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 301974FB2D53A83400BD3FC4 /* Localizable.strings */; };
 		301974F52D53A7EA00BD3FC4 /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974F42D53A7EA00BD3FC4 /* Localized.swift */; };
 		301974E12D53A46A00BD3FC4 /* MappedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974D92D53A46A00BD3FC4 /* MappedCoordinator.swift */; };
@@ -34,6 +35,7 @@
 		301974E42D53A46A00BD3FC4 /* Publisher+SingleOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974DD2D53A46A00BD3FC4 /* Publisher+SingleOutput.swift */; };
 		301974E92D53A4CC00BD3FC4 /* Route.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974E72D53A4CC00BD3FC4 /* Route.swift */; };
 		301974EA2D53A4CC00BD3FC4 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974E82D53A4CC00BD3FC4 /* Router.swift */; };
+		301975212D5411B400BD3FC4 /* RouterMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975202D5411B400BD3FC4 /* RouterMock.swift */; };
 		301974CD2D539CAD00BD3FC4 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974CC2D539CAD00BD3FC4 /* SceneDelegate.swift */; };
 		301974AE2D539B2800BD3FC4 /* Shapr3DConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974AD2D539B2800BD3FC4 /* Shapr3DConverterTests.swift */; };
 		301974B82D539B2800BD3FC4 /* Shapr3DConverterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974B72D539B2800BD3FC4 /* Shapr3DConverterUITests.swift */; };
@@ -80,6 +82,7 @@
 		301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentGridViewController.swift; sourceTree = "<group>"; };
 		3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
 		301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinator.swift; sourceTree = "<group>"; };
+		3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinatorTests.swift; sourceTree = "<group>"; };
 		301974CE2D539E6600BD3FC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		301974F42D53A7EA00BD3FC4 /* Localized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localized.swift; sourceTree = "<group>"; };
 		301974D92D53A46A00BD3FC4 /* MappedCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappedCoordinator.swift; sourceTree = "<group>"; };
@@ -87,6 +90,7 @@
 		301974DD2D53A46A00BD3FC4 /* Publisher+SingleOutput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Publisher+SingleOutput.swift"; sourceTree = "<group>"; };
 		301974E72D53A4CC00BD3FC4 /* Route.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Route.swift; sourceTree = "<group>"; };
 		301974E82D53A4CC00BD3FC4 /* Router.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		301975202D5411B400BD3FC4 /* RouterMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterMock.swift; sourceTree = "<group>"; };
 		301974CC2D539CAD00BD3FC4 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		301974982D539B2600BD3FC4 /* Shapr3DConverter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Shapr3DConverter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		301974A12D539B2800BD3FC4 /* Shapr3DConverter.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Shapr3DConverter.entitlements; sourceTree = "<group>"; };
@@ -171,6 +175,8 @@
 		301974AC2D539B2800BD3FC4 /* Shapr3DConverterTests */ = {
 			isa = PBXGroup;
 			children = (
+				3019751B2D54112C00BD3FC4 /* UI */,
+				301975202D5411B400BD3FC4 /* RouterMock.swift */,
 				301974AD2D539B2800BD3FC4 /* Shapr3DConverterTests.swift */,
 			);
 			path = Shapr3DConverterTests;
@@ -378,6 +384,30 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		3019751B2D54112C00BD3FC4 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				3019751C2D54113A00BD3FC4 /* Documents */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		3019751C2D54113A00BD3FC4 /* Documents */ = {
+			isa = PBXGroup;
+			children = (
+				3019751D2D54114000BD3FC4 /* Coordinator */,
+			);
+			path = Documents;
+			sourceTree = "<group>";
+		};
+		3019751D2D54114000BD3FC4 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -544,6 +574,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3019751F2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift in Sources */,
+				301975212D5411B400BD3FC4 /* RouterMock.swift in Sources */,
 				301974AE2D539B2800BD3FC4 /* Shapr3DConverterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

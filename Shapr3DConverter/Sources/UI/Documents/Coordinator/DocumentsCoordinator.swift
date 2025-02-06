@@ -29,7 +29,6 @@ class DocumentsCoordinator: Coordinator<Void> {
     private func bindViewModel() {
         itemsSubject
             .sink { [weak self] items in
-                print(items)
                 self?.viewController.updateItems(items)
             }
             .store(in: &cancellables)
@@ -39,18 +38,16 @@ class DocumentsCoordinator: Coordinator<Void> {
         selectFile { [weak self] sourceURL in
             guard let self = self else { return }
             DispatchQueue.global(qos: .userInitiated).async {
-                DispatchQueue.main.async {
-                    var newItems = self.itemsSubject.value
-                    let item = DocumentItem(id: UUID(),
-                                            fileURL: sourceURL,
-                                            fileName: sourceURL.lastPathComponent,
-                                            fileSize: 0,
-                                            conversionStates: [.obj: .idle,
-                                                               .step: .idle,
-                                                               .stl: .idle])
-                    newItems.append(item)
-                    self.itemsSubject.send(newItems)
-                }
+                var newItems = self.itemsSubject.value
+                let item = DocumentItem(id: UUID(),
+                                        fileURL: sourceURL,
+                                        fileName: sourceURL.lastPathComponent,
+                                        fileSize: 0,
+                                        conversionStates: [.obj: .idle,
+                                                           .step: .idle,
+                                                           .stl: .idle])
+                newItems.append(item)
+                self.itemsSubject.send(newItems)
             }
         }
     }
@@ -89,3 +86,43 @@ extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
         selectFileAndConvert()
     }
 }
+
+// MARK: - Unit testing
+
+#if DEBUG
+extension DocumentsCoordinator {
+    var testHooks: TestHooks {
+        return TestHooks(target: self)
+    }
+
+    struct TestHooks {
+        private let target: DocumentsCoordinator
+
+        init(target: DocumentsCoordinator) {
+            self.target = target
+        }
+
+        var itemsSubject: CurrentValueSubject<[DocumentItem], Never> {
+            return target.itemsSubject
+        }
+
+        func selectFileAndConvertMock(_ testURL: URL) {
+            target.selectFile { sourceURL in
+                var newItems = target.itemsSubject.value
+                let item = DocumentItem(id: UUID(),
+                                        fileURL: sourceURL,
+                                        fileName: sourceURL.lastPathComponent,
+                                        fileSize: 0,
+                                        conversionStates: [.obj: .idle])
+                newItems.append(item)
+                target.itemsSubject.send(newItems)
+            }
+            target.fileSelectionCompletion?(testURL)
+        }
+
+        func mockDocumentSelection(_ testURL: URL) {
+            target.fileSelectionCompletion?(testURL)
+        }
+    }
+}
+#endif

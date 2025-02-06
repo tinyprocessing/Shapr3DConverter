@@ -9,6 +9,29 @@
 			<key>orderHint</key>
 			<integer>0</integer>
 		</dict>
+		<key>Shapr3DConverterTests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>301974972D539B2600BD3FC4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>301974A82D539B2800BD3FC4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>301974B22D539B2800BD3FC4</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 	</dict>
 </dict>
 </plist>

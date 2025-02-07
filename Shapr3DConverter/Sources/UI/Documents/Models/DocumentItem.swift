@@ -18,18 +18,15 @@ final class DocumentItem: ObservableObject, Hashable {
     let id: UUID
     let fileURL: URL
     let fileName: String
-    let fileSize: Int
     @Published var conversionStates: [ConversionFormat: ConversionState]
 
     init(id: UUID = UUID(),
          fileURL: URL,
          fileName: String,
-         fileSize: Int,
          conversionStates: [ConversionFormat: ConversionState]? = nil) {
         self.id = id
         self.fileURL = fileURL
         self.fileName = fileName
-        self.fileSize = fileSize
         self.conversionStates = conversionStates ??
             Dictionary(uniqueKeysWithValues: ConversionFormat.allCases.map { ($0, .idle) })
     }
@@ -40,5 +37,18 @@ final class DocumentItem: ObservableObject, Hashable {
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
+    }
+}
+
+extension DocumentItem {
+    func toCacheable() -> DocumentItemCached {
+        let states = Dictionary(uniqueKeysWithValues: conversionStates
+            .map { ($0.key.rawValue, ConversionStateCodable(from: $0.value)) })
+
+        return DocumentItemCached(
+            id: id,
+            fileName: fileURL.lastPathComponent,
+            conversionStates: states
+        )
     }
 }

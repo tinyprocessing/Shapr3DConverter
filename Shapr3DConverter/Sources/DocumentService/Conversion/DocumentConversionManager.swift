@@ -50,4 +50,13 @@ final class DocumentConversionManager {
         conversionSubscriptions.removeValue(forKey: key)
         document.conversionStates[format] = .idle
     }
+
+    func cancelAllConversions(for document: DocumentItem) {
+        ConversionFormat.allCases.forEach { format in
+            let key = ConversionKey(documentID: document.id, format: format)
+            conversionSubscriptions[key]?.cancel()
+            conversionSubscriptions.removeValue(forKey: key)
+            document.conversionStates[format] = .idle
+        }
+    }
 }

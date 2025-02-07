@@ -99,6 +99,15 @@ final class DocumentDetailViewController: UIViewController {
         contentView.addSubview(stackView)
 
         setupConstraints()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        preloadImage()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loadImage(from: document.fileURL)
     }
 
@@ -133,6 +142,20 @@ final class DocumentDetailViewController: UIViewController {
         ])
     }
 
+    private func preloadImage() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            guard let imageData = try? Data(contentsOf: document.fileURL),
+                  let image = UIImage(data: imageData)
+            else { return }
+
+            let resizedImage = self.resizeImage(image, to: CGSize(width: 300, height: 200))
+            DispatchQueue.main.async {
+                self.imageView.image = resizedImage?.applyBlurEffect()
+            }
+        }
+    }
+
     private func loadImage(from url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else { return }
@@ -141,9 +164,12 @@ final class DocumentDetailViewController: UIViewController {
             else { return }
 
             DispatchQueue.main.async {
-                // This will fix memory, without resize image will take 70+ mb
                 let resizedImage = self.resizeImage(image, to: self.imageView.bounds.size)
-                self.imageView.image = resizedImage
+
+                // Smooth fade-in animation
+                UIView.transition(with: self.imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                    self.imageView.image = resizedImage
+                }, completion: nil)
             }
         }
     }
@@ -153,5 +179,23 @@ final class DocumentDetailViewController: UIViewController {
         return renderer.image { _ in
             image.draw(in: CGRect(origin: .zero, size: size))
         }
+    }
+}
+
+extension UIImage {
+    func applyBlurEffect() -> UIImage? {
+        let context = CIContext(options: nil)
+        guard let inputImage = CIImage(image: self),
+              let filter = CIFilter(name: "CIGaussianBlur")
+        else { return nil }
+
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(5.0, forKey: kCIInputRadiusKey)
+
+        guard let outputImage = filter.outputImage,
+              let cgImage = context.createCGImage(outputImage, from: inputImage.extent)
+        else { return nil }
+
+        return UIImage(cgImage: cgImage)
     }
 }

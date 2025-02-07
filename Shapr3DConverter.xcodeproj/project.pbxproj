@@ -19,6 +19,7 @@
 		301974F12D53A52900BD3FC4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974F02D53A52900BD3FC4 /* Constants.swift */; };
 		301974DF2D53A46A00BD3FC4 /* Coordinatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974D72D53A46A00BD3FC4 /* Coordinatable.swift */; };
 		301974E22D53A46A00BD3FC4 /* Coordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974DA2D53A46A00BD3FC4 /* Coordinator.swift */; };
+		301975282D563B4600BD3FC4 /* DocumentCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975272D563B4600BD3FC4 /* DocumentCacheManager.swift */; };
 		3019750E2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */; };
 		301975162D5406D700BD3FC4 /* DocumentConversionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */; };
 		301975122D53E28300BD3FC4 /* DocumentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975112D53E28300BD3FC4 /* DocumentDetailView.swift */; };
@@ -27,6 +28,7 @@
 		301975092D53BDB300BD3FC4 /* DocumentGridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975082D53BDB300BD3FC4 /* DocumentGridCell.swift */; };
 		301975052D53A8DA00BD3FC4 /* DocumentGridViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */; };
 		3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */; };
+		301975262D563A0900BD3FC4 /* DocumentItemCached.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975252D563A0900BD3FC4 /* DocumentItemCached.swift */; };
 		301975072D53A9C300BD3FC4 /* DocumentsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */; };
 		3019751F2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */; };
 		301974F92D53A83400BD3FC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 301974FB2D53A83400BD3FC4 /* Localizable.strings */; };
@@ -75,6 +77,7 @@
 		301974F02D53A52900BD3FC4 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		301974D72D53A46A00BD3FC4 /* Coordinatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinatable.swift; sourceTree = "<group>"; };
 		301974DA2D53A46A00BD3FC4 /* Coordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinator.swift; sourceTree = "<group>"; };
+		301975272D563B4600BD3FC4 /* DocumentCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentCacheManager.swift; sourceTree = "<group>"; };
 		3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConversionEngine.swift; sourceTree = "<group>"; };
 		301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentConversionManager.swift; sourceTree = "<group>"; };
 		301975112D53E28300BD3FC4 /* DocumentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentDetailView.swift; sourceTree = "<group>"; };
@@ -83,6 +86,7 @@
 		301975082D53BDB300BD3FC4 /* DocumentGridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentGridCell.swift; sourceTree = "<group>"; };
 		301975042D53A8DA00BD3FC4 /* DocumentGridViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentGridViewController.swift; sourceTree = "<group>"; };
 		3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
+		301975252D563A0900BD3FC4 /* DocumentItemCached.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItemCached.swift; sourceTree = "<group>"; };
 		301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinator.swift; sourceTree = "<group>"; };
 		3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinatorTests.swift; sourceTree = "<group>"; };
 		301974CE2D539E6600BD3FC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -340,6 +344,7 @@
 			isa = PBXGroup;
 			children = (
 				3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */,
+				301975252D563A0900BD3FC4 /* DocumentItemCached.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -347,8 +352,8 @@
 		3019750C2D53CBC200BD3FC4 /* DocumentService */ = {
 			isa = PBXGroup;
 			children = (
-				3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */,
-				301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */,
+				3019752A2D563B7000BD3FC4 /* Cache */,
+				301975292D563B6800BD3FC4 /* Conversion */,
 			);
 			path = DocumentService;
 			sourceTree = "<group>";
@@ -409,6 +414,23 @@
 				3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */,
 			);
 			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		301975292D563B6800BD3FC4 /* Conversion */ = {
+			isa = PBXGroup;
+			children = (
+				3019750D2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift */,
+				301975152D5406D700BD3FC4 /* DocumentConversionManager.swift */,
+			);
+			path = Conversion;
+			sourceTree = "<group>";
+		};
+		3019752A2D563B7000BD3FC4 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				301975272D563B4600BD3FC4 /* DocumentCacheManager.swift */,
+			);
+			path = Cache;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -554,6 +576,7 @@
 				301974F12D53A52900BD3FC4 /* Constants.swift in Sources */,
 				301974DF2D53A46A00BD3FC4 /* Coordinatable.swift in Sources */,
 				301974E22D53A46A00BD3FC4 /* Coordinator.swift in Sources */,
+				301975282D563B4600BD3FC4 /* DocumentCacheManager.swift in Sources */,
 				3019750E2D53CBDE00BD3FC4 /* DocumentConversionEngine.swift in Sources */,
 				301975162D5406D700BD3FC4 /* DocumentConversionManager.swift in Sources */,
 				301975122D53E28300BD3FC4 /* DocumentDetailView.swift in Sources */,
@@ -562,6 +585,7 @@
 				301975092D53BDB300BD3FC4 /* DocumentGridCell.swift in Sources */,
 				301975052D53A8DA00BD3FC4 /* DocumentGridViewController.swift in Sources */,
 				3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */,
+				301975262D563A0900BD3FC4 /* DocumentItemCached.swift in Sources */,
 				301975072D53A9C300BD3FC4 /* DocumentsCoordinator.swift in Sources */,
 				301974F52D53A7EA00BD3FC4 /* Localized.swift in Sources */,
 				301974E12D53A46A00BD3FC4 /* MappedCoordinator.swift in Sources */,

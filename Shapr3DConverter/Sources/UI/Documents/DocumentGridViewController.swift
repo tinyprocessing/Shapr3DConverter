@@ -3,6 +3,7 @@ import UIKit
 
 protocol DocumentGridViewControllerDelegate: AnyObject {
     func didTapAddItem()
+    func didTapDeleteItem(_ document: DocumentItem)
 }
 
 final class DocumentGridViewController: BaseViewController {
@@ -165,6 +166,24 @@ extension DocumentGridViewController: UICollectionViewDelegate {
             actionSheet.modalPresentationStyle = .pageSheet
         }
         present(actionSheet, animated: true)
+    }
+
+    func collectionView(
+        _ collectionView: UICollectionView,
+        contextMenuConfigurationForItemAt indexPath: IndexPath,
+        point: CGPoint
+    ) -> UIContextMenuConfiguration? {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return nil }
+
+        return UIContextMenuConfiguration(identifier: indexPath as NSIndexPath,
+                                          previewProvider: nil) { [weak self] _ in
+            let deleteAction = UIAction(title: "Delete",
+                                        image: UIImage(systemName: "trash"),
+                                        attributes: .destructive) { _ in
+                self?.documentDelegate?.didTapDeleteItem(item)
+            }
+            return UIMenu(title: "", children: [deleteAction])
+        }
     }
 }
 

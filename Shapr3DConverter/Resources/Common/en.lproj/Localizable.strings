@@ -3,3 +3,6 @@
 "empty_view_title" = "No Documents to convert yet";
 "empty_view_subtitle" = "Tap the + button to add your first document.";
 
+"convert" = "Convert";
+"cancel" = "Cancel";
+"share" = "Share";

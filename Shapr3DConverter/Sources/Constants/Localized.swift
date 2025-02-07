@@ -4,6 +4,9 @@ enum LocalizedString: String {
     case title
     case empty_view_title
     case empty_view_subtitle
+    case convert
+    case cancel
+    case share
 }
 
 extension String {

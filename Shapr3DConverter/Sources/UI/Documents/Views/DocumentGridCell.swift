@@ -41,7 +41,7 @@ final class DocumentCell: UICollectionViewCell {
             label.textAlignment = .center
             label.translatesAutoresizingMaskIntoConstraints = false
 
-            let progressView = CircularProgressView(size: .init(width: 15, height: 15))
+            let progressView = CircularProgressView(size: Config.progressBarSize)
             progressView.isHidden = true
             progressView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -105,43 +105,58 @@ final class DocumentCell: UICollectionViewCell {
         titleLabel.text = item.fileName
         document = item
 
-        if let imageData = try? Data(contentsOf: item.fileURL),
-           let image = UIImage(data: imageData) {
-            imageView.image = image
-        }
+        loadImage(from: item.fileURL)
 
         guard let publisher = document?.$conversionStates else { return }
 
         publisher.receive(on: DispatchQueue.main)
             .sink { [weak self] states in
-                guard let self = self else { return }
-
-                self.conversionViews.forEach { format, view in
-                    let label = view.subviews.compactMap { $0 as? UILabel }.first
-                    if case .failed = states[format] {
-                        label?.textColor = .init(hex: "e74c3c")
-                    }
-                    if case .idle = states[format] {
-                        label?.textColor = .gray.withAlphaComponent(0.4)
-                    }
-                    if case .completed = states[format] {
-                        label?.textColor = .init(hex: "2ecc71")
-                    }
-                    if case .converting(let progress) = states[format] {
-                        label?.isHidden = true
-
-                        let progressView = view.subviews.compactMap { $0 as? CircularProgressView }.first
-                        progressView?.isHidden = false
-                        progressView?.progress = progress
-                    } else {
-                        label?.isHidden = false
-
-                        let progressView = view.subviews.compactMap { $0 as? CircularProgressView }.first
-                        progressView?.isHidden = true
-                    }
-                }
+                self?.updateConversionViews(with: states)
             }
             .store(in: &cancellables)
+    }
+
+    private func loadImage(from url: URL) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else { return }
+            guard let imageData = try? Data(contentsOf: url),
+                  let image = UIImage(data: imageData)
+            else { return }
+
+            DispatchQueue.main.async {
+                let resizedImage = self.resizeImage(image, to: self.imageView.bounds.size)
+                self.imageView.image = resizedImage
+            }
+        }
+    }
+
+    private func resizeImage(_ image: UIImage, to size: CGSize) -> UIImage? {
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: size))
+        }
+    }
+
+    private func updateConversionViews(with states: [ConversionFormat: ConversionState]) {
+        conversionViews.forEach { format, view in
+            guard let label = view.subviews.compactMap({ $0 as? UILabel }).first else { return }
+            let progressView = view.subviews.compactMap { $0 as? CircularProgressView }.first
+
+            switch states[format] {
+            case .failed: label.textColor = Config.failureColor
+            case .idle: label.textColor = Config.idleColor
+            case .completed: label.textColor = Config.completedColor
+            case .converting(let progress):
+                label.isHidden = true
+                progressView?.isHidden = false
+                progressView?.progress = progress
+                return
+            default: break
+            }
+
+            label.isHidden = false
+            progressView?.isHidden = true
+        }
     }
 
     override func layoutSubviews() {
@@ -182,6 +197,9 @@ extension DocumentCell {
         static let textColor: UIColor = .black
         static let imageHeight: CGFloat = 100
         static let titleTopPadding: CGFloat = 10
-        static let conversionTextFormat = "%@ %.0f%%"
+        static let failureColor: UIColor = .init(hex: "e74c3c")
+        static let completedColor: UIColor = .init(hex: "2ecc71")
+        static let idleColor: UIColor = .systemGray.withAlphaComponent(0.7)
+        static let progressBarSize: CGSize = .init(width: 15, height: 15)
     }
 }

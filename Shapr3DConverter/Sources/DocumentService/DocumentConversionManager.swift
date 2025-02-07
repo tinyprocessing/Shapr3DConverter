@@ -19,8 +19,7 @@ final class DocumentConversionManager {
         conversionSubscriptions[key]?.cancel()
 
         document.conversionStates[format] = .converting(progress: 0)
-        let targetURL = document.fileURL.deletingLastPathComponent()
-            .appendingPathComponent("converted_" + document.fileURL.lastPathComponent)
+        let targetURL = fileConverter.outputURL(for: document.fileURL, format: format)
 
         let publisher = fileConverter.convertPublisher(from: document.fileURL, to: targetURL)
             .receive(on: DispatchQueue.main)

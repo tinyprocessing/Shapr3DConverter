@@ -6,3 +6,5 @@
 "convert" = "Convert";
 "cancel" = "Cancel";
 "share" = "Share";
+
+"convert_to" = "Convert to {format}";

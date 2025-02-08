@@ -25,6 +25,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 print("Task finished with result: \(result)")
             }
         }
+
+        let fileURLs = connectionOptions.urlContexts.map { $0.url }
+        if !fileURLs.isEmpty {
+            coordinator?.handleIncomingFiles(fileURLs)
+        }
+    }
+
+    func scene(
+        _ scene: UIScene,
+        openURLContexts URLContexts: Set<UIOpenURLContext>
+    ) {
+        let fileURLs = URLContexts.map { $0.url }
+        if !fileURLs.isEmpty {
+            coordinator?.handleIncomingFiles(fileURLs)
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}

@@ -4,6 +4,7 @@ import UIKit
 protocol DocumentGridViewControllerDelegate: AnyObject {
     func didTapAddItem()
     func didTapDeleteItem(_ document: DocumentItem)
+    func didOpenFile(_ url: URL)
 }
 
 final class DocumentGridViewController: BaseViewController {
@@ -44,6 +45,7 @@ final class DocumentGridViewController: BaseViewController {
         setupCollectionView()
         setupDataSource()
         setupEmptyStateView()
+        setupDragAndDrop()
     }
 
     override func viewWillLayoutSubviews() {
@@ -148,6 +150,11 @@ final class DocumentGridViewController: BaseViewController {
             collectionView.isHidden = isEmpty
         }
     }
+
+    private func setupDragAndDrop() {
+        let dropInteraction = UIDropInteraction(delegate: self)
+        view.addInteraction(dropInteraction)
+    }
 }
 
 extension DocumentGridViewController: UICollectionViewDelegate {
@@ -187,6 +194,32 @@ extension DocumentGridViewController: UICollectionViewDelegate {
     }
 }
 
+extension DocumentGridViewController: UIDropInteractionDelegate {
+    func dropInteraction(_ interaction: UIDropInteraction, canHandle session: UIDropSession) -> Bool {
+        return true
+    }
+
+    func dropInteraction(_ interaction: UIDropInteraction, sessionDidUpdate session: UIDropSession) -> UIDropProposal {
+        return UIDropProposal(operation: .copy)
+    }
+
+    func dropInteraction(_ interaction: UIDropInteraction, performDrop session: UIDropSession) {
+        let providers = session.items.compactMap { $0.itemProvider }
+
+        for provider in providers where provider.hasItemConformingToTypeIdentifier(Config.shaprUTI) {
+            provider.loadItem(forTypeIdentifier: Config.shaprUTI, options: nil) { [weak self] urlData, _ in
+                guard let self, let fileURL = urlData as? URL else { return }
+
+                DispatchQueue.main.async {
+                    if fileURL.pathExtension.lowercased() == Config.fileExtension {
+                        self.documentDelegate?.didOpenFile(fileURL)
+                    }
+                }
+            }
+        }
+    }
+}
+
 extension DocumentGridViewController {
     fileprivate struct Config {
         static let itemHeight: CGFloat = 150
@@ -208,6 +241,9 @@ extension DocumentGridViewController {
             default: return 5
             }
         }
+
+        static let fileExtension = "shapr"
+        static let shaprUTI = "tinyprocessing.com.shapr3dconverter.shapr"
     }
 }
 

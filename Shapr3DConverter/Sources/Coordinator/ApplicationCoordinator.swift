@@ -18,7 +18,12 @@ class ApplicationCoordinator: Coordinator<Void> {
 
     private func launch() {
         let controller = documentsCoordinator.exportViewController()
+        addChild(coordinator: documentsCoordinator)
         documentsCoordinator.start()
         router.willRouteWith(controller)
+    }
+
+    func handleIncomingFiles(_ urls: [URL]) {
+        documentsCoordinator.importFiles(urls: urls)
     }
 }

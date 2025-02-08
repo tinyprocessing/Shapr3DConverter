@@ -35,36 +35,82 @@ class DocumentsCoordinator: Coordinator<Void> {
                 self?.viewController.updateItems(items)
             }
             .store(in: &cancellables)
+        observeConversionStateChanges()
     }
 
-    fileprivate func selectFileAndConvert() {
-        selectFiles { [weak self] sourceURLs in
-            guard let self = self else { return }
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let self else { return }
-                var newItems = self.itemsSubject.value
-                for sourceURL in sourceURLs {
-                    let item = DocumentItem(id: UUID(),
-                                            fileURL: sourceURL,
-                                            fileName: sourceURL.lastPathComponent,
-                                            conversionStates: [.obj: .idle,
-                                                               .step: .idle,
-                                                               .stl: .idle])
-                    newItems.append(item)
-                }
-                self.itemsSubject.send(newItems)
-                self.saveDocumentsToCache()
+    private func observeConversionStateChanges() {
+        itemsSubject
+            .flatMap { items in
+                Publishers.MergeMany(
+                    items.map { item in
+                        item.$conversionStates
+                            .map { (item.id, $0) }
+                    }
+                )
             }
+            .sink { [weak self] _, states in
+                guard let self else { return }
+
+                for (_, state) in states {
+                    switch state {
+                    case .completed:
+                        saveDocumentsToCache()
+                    case .failed:
+                        saveDocumentsToCache()
+                    default:
+                        break
+                    }
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    private func selectFileAndConvert() {
+        selectFiles { [weak self] sourceURLs in
+            self?.processImportedFiles(sourceURLs)
+        }
+    }
+
+    func importFiles(urls: [URL]) {
+        processImportedFiles(urls)
+    }
+
+    private func processImportedFiles(_ urls: [URL]) {
+        let shaprFiles = urls.filter { $0.pathExtension.lowercased() == Config.fileExtension }
+        guard !shaprFiles.isEmpty else { return }
+
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory,
+                                                          in: .userDomainMask).first!
+        let copiedURLs = shaprFiles.compactMap { copyFile(
+            from: $0,
+            to: documentsDirectory.appendingPathComponent($0.lastPathComponent)
+        ) }
+
+        let newItems = copiedURLs.map {
+            DocumentItem(
+                id: UUID(),
+                fileURL: $0,
+                fileName: $0.lastPathComponent,
+                conversionStates: Config.defaultConversionStates
+            )
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            itemsSubject.send(itemsSubject.value + newItems)
+            saveDocumentsToCache()
         }
     }
 
     private func selectFiles(completion: @escaping ([URL]) -> Void) {
         fileSelectionCompletion = completion
-        let shaprType = UTType(filenameExtension: "shapr") ?? .data
-        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: [shaprType], asCopy: true)
+        let documentPicker = UIDocumentPickerViewController(
+            forOpeningContentTypes: [Config.shaprType],
+            asCopy: true
+        )
         documentPicker.allowsMultipleSelection = true
         documentPicker.delegate = self
-        viewController.present(documentPicker, animated: true, completion: nil)
+        viewController.present(documentPicker, animated: true)
     }
 
     // MARK: Cache actions
@@ -87,32 +133,29 @@ class DocumentsCoordinator: Coordinator<Void> {
 
 extension DocumentsCoordinator: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        let shaprFiles = urls.filter { $0.pathExtension.lowercased() == "shapr" }
+        let shaprFiles = urls.filter { $0.pathExtension.lowercased() == Config.fileExtension }
         guard !shaprFiles.isEmpty else { return }
+        fileSelectionCompletion?(shaprFiles)
+    }
 
-        let fileManager = FileManager.default
-        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-
-        var copiedURLs: [URL] = []
-        for selectedURL in shaprFiles {
-            let destinationURL = documentsDirectory.appendingPathComponent(selectedURL.lastPathComponent)
-
-            do {
-                if fileManager.fileExists(atPath: destinationURL.path) {
-                    try fileManager.removeItem(at: destinationURL)
-                }
-                try fileManager.copyItem(at: selectedURL, to: destinationURL)
-                copiedURLs.append(destinationURL)
-            } catch {
-                print("Error copying file \(selectedURL.lastPathComponent): \(error.localizedDescription)")
+    private func copyFile(from sourceURL: URL, to destinationURL: URL) -> URL? {
+        do {
+            if FileManager.default.fileExists(atPath: destinationURL.path) {
+                try FileManager.default.removeItem(at: destinationURL)
             }
+            try FileManager.default.copyItem(at: sourceURL, to: destinationURL)
+            return destinationURL
+        } catch {
+            return nil
         }
-
-        fileSelectionCompletion?(copiedURLs)
     }
 }
 
 extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
+    func didOpenFile(_ url: URL) {
+        processImportedFiles([url])
+    }
+
     func didTapDeleteItem(_ document: DocumentItem) {
         converterManager.cancelAllConversions(for: document)
 
@@ -128,30 +171,10 @@ extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
     }
 }
 
-// MARK: - Unit testing
-
-#if DEBUG
-extension DocumentsCoordinator {
-    var testHooks: TestHooks {
-        return TestHooks(target: self)
-    }
-
-    struct TestHooks {
-        private let target: DocumentsCoordinator
-
-        init(target: DocumentsCoordinator) {
-            self.target = target
-        }
-
-        var itemsSubject: CurrentValueSubject<[DocumentItem], Never> {
-            return target.itemsSubject
-        }
-
-        func selectFileAndConvertMock(_ testURL: URL) {}
-
-        func mockDocumentSelection(_ testURL: URL) {
-            target.fileSelectionCompletion?([testURL])
-        }
-    }
+private struct Config {
+    static let fileExtension = "shapr"
+    static let shaprType = UTType(filenameExtension: fileExtension) ?? .data
+    static let defaultConversionStates: [ConversionFormat: ConversionState] = [
+        .obj: .idle, .step: .idle, .stl: .idle
+    ]
 }
-#endif

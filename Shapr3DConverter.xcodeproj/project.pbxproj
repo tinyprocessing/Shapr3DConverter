@@ -30,7 +30,6 @@
 		3019750B2D53C1CF00BD3FC4 /* DocumentItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */; };
 		301975262D563A0900BD3FC4 /* DocumentItemCached.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975252D563A0900BD3FC4 /* DocumentItemCached.swift */; };
 		301975072D53A9C300BD3FC4 /* DocumentsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */; };
-		3019751F2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */; };
 		301974F92D53A83400BD3FC4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 301974FB2D53A83400BD3FC4 /* Localizable.strings */; };
 		301974F52D53A7EA00BD3FC4 /* Localized.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974F42D53A7EA00BD3FC4 /* Localized.swift */; };
 		301974E12D53A46A00BD3FC4 /* MappedCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974D92D53A46A00BD3FC4 /* MappedCoordinator.swift */; };
@@ -90,7 +89,6 @@
 		3019750A2D53C1CF00BD3FC4 /* DocumentItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItem.swift; sourceTree = "<group>"; };
 		301975252D563A0900BD3FC4 /* DocumentItemCached.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentItemCached.swift; sourceTree = "<group>"; };
 		301975062D53A9C200BD3FC4 /* DocumentsCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinator.swift; sourceTree = "<group>"; };
-		3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentsCoordinatorTests.swift; sourceTree = "<group>"; };
 		301974CE2D539E6600BD3FC4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		301974F42D53A7EA00BD3FC4 /* Localized.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Localized.swift; sourceTree = "<group>"; };
 		301974D92D53A46A00BD3FC4 /* MappedCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MappedCoordinator.swift; sourceTree = "<group>"; };
@@ -185,7 +183,6 @@
 		301974AC2D539B2800BD3FC4 /* Shapr3DConverterTests */ = {
 			isa = PBXGroup;
 			children = (
-				3019751B2D54112C00BD3FC4 /* UI */,
 				301975202D5411B400BD3FC4 /* RouterMock.swift */,
 				301974AD2D539B2800BD3FC4 /* Shapr3DConverterTests.swift */,
 			);
@@ -398,30 +395,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		3019751B2D54112C00BD3FC4 /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				3019751C2D54113A00BD3FC4 /* Documents */,
-			);
-			path = UI;
-			sourceTree = "<group>";
-		};
-		3019751C2D54113A00BD3FC4 /* Documents */ = {
-			isa = PBXGroup;
-			children = (
-				3019751D2D54114000BD3FC4 /* Coordinator */,
-			);
-			path = Documents;
-			sourceTree = "<group>";
-		};
-		3019751D2D54114000BD3FC4 /* Coordinator */ = {
-			isa = PBXGroup;
-			children = (
-				3019751E2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift */,
-			);
-			path = Coordinator;
-			sourceTree = "<group>";
-		};
 		301975292D563B6800BD3FC4 /* Conversion */ = {
 			isa = PBXGroup;
 			children = (
@@ -618,7 +591,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3019751F2D54114E00BD3FC4 /* DocumentsCoordinatorTests.swift in Sources */,
 				301975212D5411B400BD3FC4 /* RouterMock.swift in Sources */,
 				301974AE2D539B2800BD3FC4 /* Shapr3DConverterTests.swift in Sources */,
 			);

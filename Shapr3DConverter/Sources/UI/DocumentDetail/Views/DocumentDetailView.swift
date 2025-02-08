@@ -5,7 +5,7 @@ final class DocumentDetailView: UIView {
     private let format: ConversionFormat
     private var convertedFileURL: URL?
 
-    private let titleLabel: UILabel = {
+    private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
         label.textAlignment = .center
@@ -13,7 +13,7 @@ final class DocumentDetailView: UIView {
         return label
     }()
 
-    private let convertButton: UIButton = {
+    private lazy var convertButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = .localized(.convert)
         config.baseBackgroundColor = .systemBlue
@@ -22,7 +22,7 @@ final class DocumentDetailView: UIView {
         return UIButton(configuration: config)
     }()
 
-    private let cancelButton: UIButton = {
+    private lazy var cancelButton: UIButton = {
         var config = UIButton.Configuration.filled()
         config.title = .localized(.cancel)
         config.baseBackgroundColor = .systemRed
@@ -31,22 +31,22 @@ final class DocumentDetailView: UIView {
         return UIButton(configuration: config)
     }()
 
-    private let circularProgressView: CircularProgressView = {
+    private lazy var circularProgressView: CircularProgressView = {
         let view = CircularProgressView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let successIndicator: UIImageView = {
+    private lazy var successIndicator: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "checkmark.circle.fill")
+        imageView.image = UIImage(systemName: Config.successImage)
         imageView.tintColor = .systemGreen
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
         return imageView
     }()
 
-    private let errorLabel: UILabel = {
+    private lazy var errorLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.textColor = .systemRed
@@ -63,10 +63,9 @@ final class DocumentDetailView: UIView {
     init(format: ConversionFormat) {
         self.format = format
         super.init(frame: .zero)
-        titleLabel.text = "Convert to \(format.rawValue)"
+        titleLabel.text = .localized(.convert_to, [.format: format.rawValue])
         setupLayout()
-        convertButton.addTarget(self, action: #selector(convertTapped), for: .touchUpInside)
-        cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
+        setupActions()
     }
 
     @available(*, unavailable)
@@ -94,10 +93,10 @@ final class DocumentDetailView: UIView {
         addSubview(mainStack)
 
         NSLayoutConstraint.activate([
-            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            mainStack.topAnchor.constraint(equalTo: topAnchor, constant: Config.stackSpacing),
+            mainStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Config.stackSpacing),
+            mainStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Config.stackSpacing),
+            mainStack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Config.stackSpacing),
 
             circularProgressView.heightAnchor.constraint(equalToConstant: 30),
             circularProgressView.widthAnchor.constraint(equalToConstant: 30),
@@ -105,6 +104,11 @@ final class DocumentDetailView: UIView {
             successIndicator.heightAnchor.constraint(equalToConstant: 30),
             successIndicator.widthAnchor.constraint(equalToConstant: 30)
         ])
+    }
+
+    private func setupActions() {
+        convertButton.addTarget(self, action: #selector(convertTapped), for: .touchUpInside)
+        cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
     }
 
     @objc private func convertTapped() {
@@ -119,44 +123,26 @@ final class DocumentDetailView: UIView {
         update(state: .idle)
     }
 
-    @objc private func shareTapped() {
-        guard let url = convertedFileURL else { return }
-        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let filePath = documentsDirectory.appendingPathComponent(url.lastPathComponent)
-        shareActionPublisher.send(filePath)
-    }
-
     func update(state: ConversionState) {
+        circularProgressView.isHidden = true
+        successIndicator.isHidden = true
+        errorLabel.isHidden = true
+        cancelButton.isHidden = true
+
         switch state {
         case .idle:
-            circularProgressView.isHidden = true
-            successIndicator.isHidden = true
-            errorLabel.isHidden = true
-            cancelButton.isHidden = true
             configureConvertButton()
-
         case .converting(let progress):
             circularProgressView.isHidden = false
             circularProgressView.progress = CGFloat(progress)
-            successIndicator.isHidden = true
-            errorLabel.isHidden = true
             cancelButton.isHidden = false
-
         case .completed(let url):
             convertedFileURL = url
-            circularProgressView.isHidden = true
             successIndicator.isHidden = false
-            errorLabel.isHidden = true
-            cancelButton.isHidden = true
             configureShareButton()
-
         case .failed(let message):
-            circularProgressView.progress = 0
-            circularProgressView.isHidden = true
-            successIndicator.isHidden = true
             errorLabel.text = message
             errorLabel.isHidden = false
-            cancelButton.isHidden = true
             configureConvertButton()
         }
     }
@@ -181,5 +167,20 @@ final class DocumentDetailView: UIView {
         convertButton.configuration = config
         convertButton.removeTarget(self, action: #selector(convertTapped), for: .touchUpInside)
         convertButton.addTarget(self, action: #selector(shareTapped), for: .touchUpInside)
+    }
+
+    @objc private func shareTapped() {
+        guard let url = convertedFileURL else { return }
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let filePath = documentsDirectory.appendingPathComponent(url.lastPathComponent)
+        shareActionPublisher.send(filePath)
+    }
+}
+
+extension DocumentDetailView {
+    fileprivate struct Config {
+        static let successImage = "checkmark.circle.fill"
+        static let padding: CGFloat = 16
+        static let stackSpacing: CGFloat = 16
     }
 }

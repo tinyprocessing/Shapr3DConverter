@@ -44,7 +44,9 @@
 		301974B82D539B2800BD3FC4 /* Shapr3DConverterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974B72D539B2800BD3FC4 /* Shapr3DConverterUITests.swift */; };
 		301974BA2D539B2800BD3FC4 /* Shapr3DConverterUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974B92D539B2800BD3FC4 /* Shapr3DConverterUITestsLaunchTests.swift */; };
 		301974FF2D53A89100BD3FC4 /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974FE2D53A89100BD3FC4 /* UIColor+Extensions.swift */; };
+		3019752C2D56475E00BD3FC4 /* UIImage+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3019752B2D56475E00BD3FC4 /* UIImage+Extensions.swift */; };
 		301974D02D53A37F00BD3FC4 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 301974CF2D53A37F00BD3FC4 /* main.swift */; };
+		3043DF312D57809A00C3EBFD /* shaprIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 3043DF302D57809A00C3EBFD /* shaprIcon.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,9 +108,11 @@
 		301974B32D539B2800BD3FC4 /* Shapr3DConverterUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Shapr3DConverterUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		301974B92D539B2800BD3FC4 /* Shapr3DConverterUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapr3DConverterUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		301974FE2D53A89100BD3FC4 /* UIColor+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		3019752B2D56475E00BD3FC4 /* UIImage+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Extensions.swift"; sourceTree = "<group>"; };
 		301974FA2D53A83400BD3FC4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		301974FC2D53A83500BD3FC4 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		301974CF2D53A37F00BD3FC4 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		3043DF302D57809A00C3EBFD /* shaprIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shaprIcon.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +205,7 @@
 			isa = PBXGroup;
 			children = (
 				301974F62D53A81C00BD3FC4 /* Common */,
+				3019752D2D57769000BD3FC4 /* Icons */,
 				301974A22D539B2800BD3FC4 /* Preview Content */,
 				3019749F2D539B2800BD3FC4 /* Assets.xcassets */,
 			);
@@ -308,6 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				301974FE2D53A89100BD3FC4 /* UIColor+Extensions.swift */,
+				3019752B2D56475E00BD3FC4 /* UIImage+Extensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -433,6 +439,14 @@
 			path = Cache;
 			sourceTree = "<group>";
 		};
+		3019752D2D57769000BD3FC4 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				3043DF302D57809A00C3EBFD /* shaprIcon.png */,
+			);
+			path = Icons;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -541,6 +555,7 @@
 				301974A02D539B2800BD3FC4 /* Assets.xcassets in Resources */,
 				301974F92D53A83400BD3FC4 /* Localizable.strings in Resources */,
 				301974A42D539B2800BD3FC4 /* Preview Assets.xcassets in Resources */,
+				3043DF312D57809A00C3EBFD /* shaprIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -594,6 +609,7 @@
 				301974EA2D53A4CC00BD3FC4 /* Router.swift in Sources */,
 				301974CD2D539CAD00BD3FC4 /* SceneDelegate.swift in Sources */,
 				301974FF2D53A89100BD3FC4 /* UIColor+Extensions.swift in Sources */,
+				3019752C2D56475E00BD3FC4 /* UIImage+Extensions.swift in Sources */,
 				301974D02D53A37F00BD3FC4 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -773,7 +789,6 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shapr3DConverter/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = NO;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -813,7 +828,6 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Shapr3DConverter/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = NO;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = NO;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;

@@ -28,53 +28,9 @@ final class DocumentDetailViewController: UIViewController {
     }()
 
     private lazy var stackView: UIStackView = {
-        let views = ConversionFormat.allCases.sorted(by: { $0.rawValue < $1.rawValue })
-            .map { format -> DocumentDetailView in
-                let view = DocumentDetailView(format: format)
-                view.shareActionPublisher
-                    .sink { [weak self] url in
-                        guard let self = self else { return }
-                        let activityViewController = UIActivityViewController(
-                            activityItems: [url],
-                            applicationActivities: nil
-                        )
-
-                        if let popoverController = activityViewController.popoverPresentationController {
-                            popoverController.sourceView = self.view
-                            popoverController.sourceRect = CGRect(
-                                x: self.view.bounds.midX,
-                                y: self.view.bounds.midY,
-                                width: 0,
-                                height: 0
-                            )
-                            popoverController.permittedArrowDirections = []
-                        }
-
-                        self.present(activityViewController, animated: true)
-                    }
-                    .store(in: &self.cancellables)
-                view.convertActionPublisher
-                    .sink { [weak self] in
-                        guard let self = self else { return }
-                        self.conversionManager.startConversion(for: self.document, format: format)
-                    }
-                    .store(in: &self.cancellables)
-                view.cancelActionPublisher
-                    .sink { [weak self] in
-                        guard let self = self else { return }
-                        self.conversionManager.cancelConversion(for: self.document, format: format)
-                    }
-                    .store(in: &self.cancellables)
-                self.document.$conversionStates
-                    .map { $0[format] ?? .idle }
-                    .receive(on: DispatchQueue.main)
-                    .sink { state in view.update(state: state) }
-                    .store(in: &self.cancellables)
-                return view
-            }
-        let stack = UIStackView(arrangedSubviews: views)
+        let stack = UIStackView(arrangedSubviews: createDetailViews())
         stack.axis = .vertical
-        stack.spacing = 16
+        stack.spacing = Config.stackSpacing
         stack.translatesAutoresizingMaskIntoConstraints = false
         return stack
     }()
@@ -92,23 +48,20 @@ final class DocumentDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
-        view.addSubview(scrollView)
-        scrollView.addSubview(contentView)
-
-        contentView.addSubview(imageView)
-        contentView.addSubview(stackView)
-
-        setupConstraints()
+        setupUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        preloadImage()
+        loadImage(from: document.fileURL)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        loadImage(from: document.fileURL)
+    private func setupUI() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(imageView)
+        contentView.addSubview(stackView)
+        setupConstraints()
     }
 
     private func setupConstraints() {
@@ -116,86 +69,82 @@ final class DocumentDetailViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
+            scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
-            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 200)
+            imageView.heightAnchor.constraint(equalToConstant: Config.imageHeight),
+            stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: Config.stackTopPadding),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Config.stackSidePadding),
+            stackView.trailingAnchor.constraint(
+                equalTo: contentView.trailingAnchor,
+                constant: -Config.stackSidePadding
+            ),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Config.stackBottomPadding)
         ])
-
-        NSLayoutConstraint.activate([
-            stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20),
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
-        ])
-    }
-
-    private func preloadImage() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            guard let imageData = try? Data(contentsOf: document.fileURL),
-                  let image = UIImage(data: imageData)
-            else { return }
-
-            let resizedImage = self.resizeImage(image, to: CGSize(width: 300, height: 200))
-            DispatchQueue.main.async {
-                self.imageView.image = resizedImage?.applyBlurEffect()
-            }
-        }
     }
 
     private func loadImage(from url: URL) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let self = self else { return }
-            guard let imageData = try? Data(contentsOf: url),
+            guard let self, let imageData = try? Data(contentsOf: url),
                   let image = UIImage(data: imageData)
             else { return }
-
             DispatchQueue.main.async {
-                let resizedImage = self.resizeImage(image, to: self.imageView.bounds.size)
-
-                // Smooth fade-in animation
-                UIView.transition(with: self.imageView, duration: 0.3, options: .transitionCrossDissolve, animations: {
-                    self.imageView.image = resizedImage
-                }, completion: nil)
+                UIView.transition(
+                    with: self.imageView,
+                    duration: Config.imageFadeDuration,
+                    options: .transitionCrossDissolve
+                ) {
+                    self.imageView.image = image.resized(to: CGSize(width: self.view.bounds.width,
+                                                                    height: Config.imageHeight))
+                }
             }
         }
     }
 
-    private func resizeImage(_ image: UIImage, to size: CGSize) -> UIImage? {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { _ in
-            image.draw(in: CGRect(origin: .zero, size: size))
+    private func createDetailViews() -> [UIView] {
+        ConversionFormat.allCases.sorted(by: { $0.rawValue < $1.rawValue }).map { format in
+            let view = DocumentDetailView(format: format)
+            view.shareActionPublisher
+                .sink { [weak self] url in self?.presentShareSheet(for: url) }
+                .store(in: &cancellables)
+            view.convertActionPublisher
+                .sink { [weak self] in self?.conversionManager.startConversion(for: self!.document, format: format) }
+                .store(in: &cancellables)
+            view.cancelActionPublisher
+                .sink { [weak self] in self?.conversionManager.cancelConversion(for: self!.document, format: format) }
+                .store(in: &cancellables)
+            document.$conversionStates
+                .map { $0[format] ?? .idle }
+                .receive(on: DispatchQueue.main)
+                .sink { view.update(state: $0) }
+                .store(in: &cancellables)
+            return view
         }
+    }
+
+    private func presentShareSheet(for url: URL) {
+        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        if let popover = activityVC.popoverPresentationController {
+            popover.sourceView = view
+            popover.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+            popover.permittedArrowDirections = []
+        }
+        present(activityVC, animated: true)
     }
 }
 
-extension UIImage {
-    func applyBlurEffect() -> UIImage? {
-        let context = CIContext(options: nil)
-        guard let inputImage = CIImage(image: self),
-              let filter = CIFilter(name: "CIGaussianBlur")
-        else { return nil }
-
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(5.0, forKey: kCIInputRadiusKey)
-
-        guard let outputImage = filter.outputImage,
-              let cgImage = context.createCGImage(outputImage, from: inputImage.extent)
-        else { return nil }
-
-        return UIImage(cgImage: cgImage)
-    }
+private enum Config {
+    static let stackSpacing: CGFloat = 16
+    static let stackTopPadding: CGFloat = 20
+    static let stackSidePadding: CGFloat = 20
+    static let stackBottomPadding: CGFloat = 20
+    static let imageHeight: CGFloat = 200
+    static let imageFadeDuration: TimeInterval = 0.3
+    static let imagePreviewSize = CGSize(width: 300, height: 200)
 }

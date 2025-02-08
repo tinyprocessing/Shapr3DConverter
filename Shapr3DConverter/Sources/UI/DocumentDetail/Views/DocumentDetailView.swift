@@ -121,7 +121,9 @@ final class DocumentDetailView: UIView {
 
     @objc private func shareTapped() {
         guard let url = convertedFileURL else { return }
-        shareActionPublisher.send(url)
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let filePath = documentsDirectory.appendingPathComponent(url.lastPathComponent)
+        shareActionPublisher.send(filePath)
     }
 
     func update(state: ConversionState) {

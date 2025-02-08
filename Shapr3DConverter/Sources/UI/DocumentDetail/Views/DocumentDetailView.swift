@@ -178,7 +178,7 @@ final class DocumentDetailView: UIView {
 }
 
 extension DocumentDetailView {
-    fileprivate struct Config {
+    fileprivate enum Config {
         static let successImage = "checkmark.circle.fill"
         static let padding: CGFloat = 16
         static let stackSpacing: CGFloat = 16

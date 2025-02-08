@@ -134,7 +134,7 @@ final class DocumentGridViewController: BaseViewController {
     }
 
     func updateItems(_ items: [DocumentItem]) {
-        guard let dataSource = dataSource else { return }
+        guard let dataSource else { return }
         var snapshot = NSDiffableDataSourceSnapshot<Section, DocumentItem>()
         snapshot.appendSections([.main])
         snapshot.appendItems(items)
@@ -221,7 +221,7 @@ extension DocumentGridViewController: UIDropInteractionDelegate {
 }
 
 extension DocumentGridViewController {
-    fileprivate struct Config {
+    fileprivate enum Config {
         static let itemHeight: CGFloat = 150
         static let interItemSpacing: CGFloat = 10
         static let interGroupSpacing: CGFloat = 10

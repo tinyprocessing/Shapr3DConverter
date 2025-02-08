@@ -19,11 +19,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window?.tintColor = Colors.PrimaryColor
 
         coordinator = ApplicationCoordinator(router: router)
-        if let coordinator = coordinator {
+        if let coordinator {
             coordinator.start()
-            coordinator.onFinish = { result in
-                print("Task finished with result: \(result)")
-            }
+            coordinator.onFinish = { _ in }
         }
 
         let fileURLs = connectionOptions.urlContexts.map { $0.url }

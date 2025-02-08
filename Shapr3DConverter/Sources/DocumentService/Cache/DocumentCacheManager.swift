@@ -2,7 +2,7 @@ import Combine
 import Foundation
 
 final class DocumentCacheManager {
-    private let cacheFileName = "documents_cache.json"
+    private let cacheFileName = ".documents_cache.json"
 
     // MARK: - Save Documents to Cache
 
@@ -17,7 +17,7 @@ final class DocumentCacheManager {
                 let cacheURL = self.cacheFileURL()
                 try data.write(to: cacheURL)
             } catch {
-                print("Failed to save documents to cache: \(error.localizedDescription)")
+                return
             }
         }
     }
@@ -40,7 +40,6 @@ final class DocumentCacheManager {
                 return FileManager.default.fileExists(atPath: filePath.path) ? cachedItem.toDocumentItem() : nil
             }
         } catch {
-            print("Failed to restore documents from cache: \(error.localizedDescription)")
             return []
         }
     }

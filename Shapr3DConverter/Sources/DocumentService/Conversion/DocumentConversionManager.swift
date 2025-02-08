@@ -25,7 +25,7 @@ final class DocumentConversionManager {
             .receive(on: DispatchQueue.main)
 
         let subscription = publisher.sink { [weak self] completion in
-            guard let self = self else { return }
+            guard let self else { return }
             switch completion {
             case .failure(let error):
                 if error is CancellationError {
@@ -34,10 +34,10 @@ final class DocumentConversionManager {
                     document.conversionStates[format] = .failed(error.localizedDescription)
                 }
             case .finished:
-                let outputURL = self.fileConverter.outputURL(for: document.fileURL, format: format)
+                let outputURL = fileConverter.outputURL(for: document.fileURL, format: format)
                 document.conversionStates[format] = .completed(outputURL)
             }
-            self.conversionSubscriptions.removeValue(forKey: key)
+            conversionSubscriptions.removeValue(forKey: key)
         } receiveValue: { progress in
             document.conversionStates[format] = .converting(progress: progress)
         }

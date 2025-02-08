@@ -190,7 +190,7 @@ final class DocumentCell: UICollectionViewCell {
 }
 
 extension DocumentCell {
-    fileprivate struct Config {
+    fileprivate enum Config {
         static let reuseIdentifier = "DocumentCell"
         static let cornerRadius: CGFloat = 8
         static let titleFont: UIFont = .systemFont(ofSize: 16, weight: .medium)

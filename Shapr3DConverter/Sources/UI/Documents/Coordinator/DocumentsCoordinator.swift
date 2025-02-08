@@ -122,8 +122,8 @@ class DocumentsCoordinator: Coordinator<Void> {
 
     private func restoreCachedDocuments() {
         DispatchQueue.global(qos: .background).async { [weak self] in
-            guard let self = self else { return }
-            let restoredItems = self.cacheManager.restoreDocuments()
+            guard let self else { return }
+            let restoredItems = cacheManager.restoreDocuments()
             DispatchQueue.main.async {
                 self.itemsSubject.send(restoredItems)
             }
@@ -159,6 +159,13 @@ extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
     func didTapDeleteItem(_ document: DocumentItem) {
         converterManager.cancelAllConversions(for: document)
 
+        // TODO: Remove middle / full state files under processing
+        do {
+            if FileManager.default.fileExists(atPath: document.fileURL.path) {
+                try FileManager.default.removeItem(at: document.fileURL)
+            }
+        } catch {}
+
         var currentItems = itemsSubject.value
         currentItems.removeAll { $0.id == document.id }
 
@@ -171,7 +178,7 @@ extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
     }
 }
 
-private struct Config {
+private enum Config {
     static let fileExtension = "shapr"
     static let shaprType = UTType(filenameExtension: fileExtension) ?? .data
     static let defaultConversionStates: [ConversionFormat: ConversionState] = [

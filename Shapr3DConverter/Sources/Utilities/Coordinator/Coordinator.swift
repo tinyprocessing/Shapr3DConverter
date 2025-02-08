@@ -12,6 +12,7 @@ open class Coordinator<CoordinationResult>: UIResponder {
 
     public var result: CoordinationResult {
         get async {
+            // swiftlint:disable:next force_try
             try! await resultSubject.compactMap { $0 }.singleOutput()
         }
     }
@@ -46,7 +47,7 @@ open class Coordinator<CoordinationResult>: UIResponder {
     }
 
     private func removeChild<T>(coordinator: Coordinator<T>?) {
-        guard let coordinator = coordinator else {
+        guard let coordinator else {
             return
         }
 

@@ -10,6 +10,7 @@ enum LocalizedString {
     case cancel
     case share
     case convert_to
+    case delete
 
     var key: String {
         switch self {

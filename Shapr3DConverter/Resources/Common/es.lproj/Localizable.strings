@@ -1,3 +1,11 @@
 // MARK: General
 "title" = "Título";
+"empty_view_title" = "Aún no hay documentos para convertir";
+"empty_view_subtitle" = "Toca el botón + para añadir tu primer documento.";
 
+"convert" = "Convertir";
+"cancel" = "Cancelar";
+"share" = "Compartir";
+
+"convert_to" = "Convertir a {format}";
+"delete" = "Eliminar";

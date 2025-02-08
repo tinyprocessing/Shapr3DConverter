@@ -1,0 +1,11 @@
+// MARK: General
+"title" = "Cím";
+"empty_view_title" = "Nincsenek még konvertálható dokumentumok";
+"empty_view_subtitle" = "Érintsd meg a + gombot az első dokumentum hozzáadásához.";
+
+"convert" = "Konvertálás";
+"cancel" = "Mégse";
+"share" = "Megosztás";
+
+"convert_to" = "Konvertálás {format} formátumba";
+"delete" = "Törlés";

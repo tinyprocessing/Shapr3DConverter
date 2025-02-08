@@ -184,8 +184,8 @@ extension DocumentGridViewController: UICollectionViewDelegate {
 
         return UIContextMenuConfiguration(identifier: indexPath as NSIndexPath,
                                           previewProvider: nil) { [weak self] _ in
-            let deleteAction = UIAction(title: "Delete",
-                                        image: UIImage(systemName: "trash"),
+            let deleteAction = UIAction(title: .localized(.delete),
+                                        image: Config.trashImage,
                                         attributes: .destructive) { _ in
                 self?.documentDelegate?.didTapDeleteItem(item)
             }
@@ -232,6 +232,7 @@ extension DocumentGridViewController {
             systemName: "plus.circle.fill",
             withConfiguration: imageConfig
         )?.withTintColor(.systemBlue, renderingMode: .alwaysOriginal)
+        static let trashImage: UIImage? = UIImage(systemName: "trash")
 
         static func columns(for width: CGFloat) -> Int {
             switch width {

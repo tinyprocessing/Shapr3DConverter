@@ -9,3 +9,11 @@
 
 "convert_to" = "Convert to {format}";
 "delete" = "Delete";
+
+"kind" = "Kind";
+"shapr_document" = "Shapr Document";
+"size" = "Size";
+"created" = "Created";
+"modified" = "Modified";
+"last_opened" = "Last Opened";
+"unknown" = "Unknown";

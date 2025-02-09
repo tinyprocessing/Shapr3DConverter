@@ -20,6 +20,27 @@ final class DocumentItem: ObservableObject, Hashable {
     let fileName: String
     @Published var conversionStates: [ConversionFormat: ConversionState]
 
+    private lazy var fileAttributes: [FileAttributeKey: Any]? = try? FileManager.default
+        .attributesOfItem(atPath: fileURL.path)
+
+    var fileSize: String {
+        guard let fileSize = fileAttributes?[.size] as? Int64 else { return "Unknown" }
+        return ByteCountFormatter().string(fromByteCount: fileSize)
+    }
+
+    var creationDate: Date? {
+        fileAttributes?[.creationDate] as? Date
+    }
+
+    var modificationDate: Date? {
+        fileAttributes?[.modificationDate] as? Date
+    }
+
+    var lastOpenedDate: Date? {
+        let resourceValues = try? fileURL.resourceValues(forKeys: [.contentAccessDateKey])
+        return resourceValues?.contentAccessDate
+    }
+
     init(id: UUID = UUID(),
          fileURL: URL,
          fileName: String,

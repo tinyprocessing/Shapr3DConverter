@@ -11,6 +11,13 @@ enum LocalizedString {
     case share
     case convert_to
     case delete
+    case kind
+    case shapr_document
+    case size
+    case created
+    case modified
+    case last_opened
+    case unknown
 
     var key: String {
         switch self {

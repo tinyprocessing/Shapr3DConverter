@@ -28,7 +28,7 @@ final class DocumentDetailViewController: UIViewController {
     }()
 
     private lazy var stackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: createDetailViews())
+        let stack = UIStackView()
         stack.axis = .vertical
         stack.spacing = Config.stackSpacing
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -49,6 +49,8 @@ final class DocumentDetailViewController: UIViewController {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         setupUI()
+        populateConversionViews()
+        populateFileInformation()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -70,15 +72,18 @@ final class DocumentDetailViewController: UIViewController {
             scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             imageView.heightAnchor.constraint(equalToConstant: Config.imageHeight),
+
             stackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: Config.stackTopPadding),
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Config.stackSidePadding),
             stackView.trailingAnchor.constraint(
@@ -107,6 +112,38 @@ final class DocumentDetailViewController: UIViewController {
         }
     }
 
+    private func populateFileInformation() {
+        let fileInfoViews = [
+            createDetailLabel(title: .localized(.kind), value: .localized(.shapr_document)),
+            createDetailLabel(title: .localized(.size), value: document.fileSize),
+            createDetailLabel(
+                title: .localized(.created),
+                value: document.creationDate
+                    .map { DateFormatter.localizedString(from: $0, dateStyle: .medium, timeStyle: .short) } ??
+                    .localized(.unknown)
+            ),
+            createDetailLabel(
+                title: .localized(.modified),
+                value: document.modificationDate
+                    .map { DateFormatter.localizedString(from: $0, dateStyle: .medium, timeStyle: .short) } ??
+                    .localized(.unknown)
+            ),
+            createDetailLabel(
+                title: .localized(.last_opened),
+                value: document.lastOpenedDate
+                    .map { DateFormatter.localizedString(from: $0, dateStyle: .medium, timeStyle: .short) } ??
+                    .localized(.unknown)
+            )
+        ]
+
+        fileInfoViews.forEach { stackView.addArrangedSubview($0) }
+    }
+
+    private func populateConversionViews() {
+        let conversionViews = createDetailViews()
+        conversionViews.forEach { stackView.addArrangedSubview($0) }
+    }
+
     private func createDetailViews() -> [UIView] {
         ConversionFormat.allCases.sorted(by: { $0.rawValue < $1.rawValue }).map { format in
             let view = DocumentDetailView(format: format)
@@ -128,6 +165,24 @@ final class DocumentDetailViewController: UIViewController {
         }
     }
 
+    private func createDetailLabel(title: String, value: String) -> UIView {
+        let titleLabel = UILabel()
+        titleLabel.text = title
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        titleLabel.textColor = .secondaryLabel
+
+        let valueLabel = UILabel()
+        valueLabel.text = value
+        valueLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        valueLabel.textColor = .label
+        valueLabel.numberOfLines = 0
+
+        let container = UIStackView(arrangedSubviews: [titleLabel, valueLabel])
+        container.axis = .vertical
+        container.spacing = 4
+        return container
+    }
+
     private func presentShareSheet(for url: URL) {
         let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         if let popover = activityVC.popoverPresentationController {
@@ -146,5 +201,4 @@ private enum Config {
     static let stackBottomPadding: CGFloat = 20
     static let imageHeight: CGFloat = 200
     static let imageFadeDuration: TimeInterval = 0.3
-    static let imagePreviewSize = CGSize(width: 300, height: 200)
 }

@@ -71,7 +71,7 @@ final class DocumentGridViewController: BaseViewController {
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: createLayout())
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
-        collectionView.register(DocumentCell.self, forCellWithReuseIdentifier: DocumentCell.reuseIdentifier)
+        collectionView.register(DocumentGridCell.self, forCellWithReuseIdentifier: DocumentGridCell.reuseIdentifier)
         view.addSubview(collectionView)
 
         NSLayoutConstraint.activate([
@@ -125,9 +125,9 @@ final class DocumentGridViewController: BaseViewController {
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) {
             collectionView, indexPath, item in
             let cell = collectionView.dequeueReusableCell(
-                withReuseIdentifier: DocumentCell.reuseIdentifier,
+                withReuseIdentifier: DocumentGridCell.reuseIdentifier,
                 for: indexPath
-            ) as? DocumentCell
+            ) as? DocumentGridCell
             cell?.configure(with: item)
             return cell
         }

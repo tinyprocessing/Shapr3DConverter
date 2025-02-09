@@ -79,8 +79,10 @@ final class DocumentConversionEngine: FileConverterProtocol {
 }
 
 extension DocumentConversionEngine {
-    func outputURL(for inputURL: URL, format: ConversionFormat) -> URL {
+    func outputURL(for inputURL: URL, format: ConversionFormat, fileName: String = "") -> URL {
         let fileExtension = format.rawValue.trimmingCharacters(in: CharacterSet(charactersIn: "."))
-        return inputURL.deletingPathExtension().appendingPathExtension(fileExtension)
+        let urlWithoutLastPathComponent = inputURL.deletingLastPathComponent()
+        let fileNameWithoutExtension = fileName.split(separator: ".").first ?? ""
+        return urlWithoutLastPathComponent.appendingPathComponent("\(fileNameWithoutExtension).\(fileExtension)")
     }
 }

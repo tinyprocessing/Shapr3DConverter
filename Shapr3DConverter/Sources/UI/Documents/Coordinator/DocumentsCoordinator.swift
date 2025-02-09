@@ -7,6 +7,7 @@ final class DocumentsCoordinator: Coordinator<Void> {
     private let router: Router?
     private let viewController: DocumentGridViewController
     private var cancellables = Set<AnyCancellable>()
+    private var documentSubscriptions = [UUID: AnyCancellable]()
     private let itemsSubject = CurrentValueSubject<[DocumentItem], Never>([])
     private let documentPickerManager: DocumentPickerManaging
     private let conversionManager: DocumentConversionManaging
@@ -48,32 +49,34 @@ final class DocumentsCoordinator: Coordinator<Void> {
     }
 
     private func observeConversionStateChanges() {
-        let conversionStatePublisher: AnyPublisher<(UUID, [ConversionFormat: ConversionState]), Never> =
-            itemsSubject
-                .map { (items: [DocumentItem]) -> [AnyPublisher<(UUID, [ConversionFormat: ConversionState]), Never>] in
-                    items.map { item in
-                        item.$conversionStates
-                            .map { (item.id, $0) }
-                            .eraseToAnyPublisher()
-                    }
-                }
-                .flatMap { publishers in
-                    Publishers.MergeMany(publishers)
-                }
-                .eraseToAnyPublisher()
+        itemsSubject
+            .sink { [weak self] items in
+                guard let self = self else { return }
 
-        conversionStatePublisher
-            .sink { [weak self] _, states in
-                guard let self else { return }
-                for (_, state) in states {
-                    switch state {
-                    case .completed:
-                        saveDocumentsToCache()
-                    case .failed:
-                        saveDocumentsToCache()
-                    default:
-                        break
-                    }
+                let currentIDs = Set(items.map { $0.id })
+                let removedIDs = Set(self.documentSubscriptions.keys).subtracting(currentIDs)
+                removedIDs.forEach { id in
+                    self.documentSubscriptions[id]?.cancel()
+                    self.documentSubscriptions.removeValue(forKey: id)
+                }
+
+                items.forEach { item in
+                    guard self.documentSubscriptions[item.id] == nil else { return }
+
+                    let subscription = item.$conversionStates
+                        .map { (item.id, $0) }
+                        .sink { [weak self] _, states in
+                            guard let self = self else { return }
+                            for (_, state) in states {
+                                switch state {
+                                case .completed, .failed:
+                                    self.saveDocumentsToCache()
+                                default:
+                                    break
+                                }
+                            }
+                        }
+                    self.documentSubscriptions[item.id] = subscription
                 }
             }
             .store(in: &cancellables)
@@ -99,12 +102,19 @@ final class DocumentsCoordinator: Coordinator<Void> {
         let copiedURLs = shaprFiles.compactMap {
             fileManager.copyFile(from: $0, to: documentsDirectory.appendingPathComponent($0.lastPathComponent))
         }
-        let newItems = copiedURLs.map { url in
-            DocumentItem(id: UUID(),
-                         fileURL: url,
-                         fileName: url.lastPathComponent,
-                         conversionStates: Config.defaultConversionStates)
+
+        let newItems: [DocumentItem] = copiedURLs.compactMap { value in
+            if let url = value.1 {
+                return DocumentItem(
+                    id: UUID(),
+                    fileURL: url,
+                    fileName: value.0,
+                    conversionStates: Config.defaultConversionStates
+                )
+            }
+            return nil
         }
+
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
             self.itemsSubject.send(self.itemsSubject.value + newItems)
@@ -133,11 +143,16 @@ extension DocumentsCoordinator: DocumentGridViewControllerDelegate {
     }
 
     func didTapDeleteItem(_ document: DocumentItem) {
+        documentSubscriptions[document.id]?.cancel()
+        documentSubscriptions.removeValue(forKey: document.id)
+
         conversionManager.cancelAllConversions(for: document)
         _ = fileManager.removeFile(at: document.fileURL)
+
         var currentItems = itemsSubject.value
         currentItems.removeAll { $0.id == document.id }
         itemsSubject.send(currentItems)
+
         saveDocumentsToCache()
     }
 

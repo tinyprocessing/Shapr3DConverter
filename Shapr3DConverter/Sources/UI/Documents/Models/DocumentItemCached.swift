@@ -45,11 +45,12 @@ struct ConversionStateCodable: Codable {
 struct DocumentItemCached: Codable {
     let id: UUID
     let fileName: String
+    let fileURL: String
     let conversionStates: [String: ConversionStateCodable]
 
     func toDocumentItem() -> DocumentItem? {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let fileURL = documentsDirectory.appendingPathComponent(fileName)
+        let fileURL = documentsDirectory.appendingPathComponent(fileURL)
 
         let states = conversionStates
             .compactMapKeys { ConversionFormat(rawValue: $0) }

@@ -41,7 +41,7 @@ final class DocumentCacheManager: DocumentCaching {
             let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 
             return cachedItems.compactMap { cachedItem in
-                let filePath = documentsDirectory.appendingPathComponent(cachedItem.fileName)
+                let filePath = documentsDirectory.appendingPathComponent(cachedItem.fileURL)
                 return FileManager.default.fileExists(atPath: filePath.path) ? cachedItem.toDocumentItem() : nil
             }
         } catch {

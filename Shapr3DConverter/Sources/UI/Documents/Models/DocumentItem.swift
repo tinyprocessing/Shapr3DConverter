@@ -47,7 +47,8 @@ extension DocumentItem {
 
         return DocumentItemCached(
             id: id,
-            fileName: fileURL.lastPathComponent,
+            fileName: fileName,
+            fileURL: fileURL.lastPathComponent,
             conversionStates: states
         )
     }

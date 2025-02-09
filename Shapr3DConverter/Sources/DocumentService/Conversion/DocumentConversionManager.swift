@@ -25,7 +25,7 @@ final class DocumentConversionManager: DocumentConversionManaging {
         conversionSubscriptions[key]?.cancel()
 
         document.conversionStates[format] = .converting(progress: 0)
-        let targetURL = fileConverter.outputURL(for: document.fileURL, format: format)
+        let targetURL = fileConverter.outputURL(for: document.fileURL, format: format, fileName: document.fileName)
 
         let publisher = fileConverter.convertPublisher(from: document.fileURL, to: targetURL)
             .receive(on: DispatchQueue.main)
@@ -40,7 +40,9 @@ final class DocumentConversionManager: DocumentConversionManaging {
                     document.conversionStates[format] = .failed(error.localizedDescription)
                 }
             case .finished:
-                let outputURL = fileConverter.outputURL(for: document.fileURL, format: format)
+                let outputURL = fileConverter.outputURL(for: document.fileURL,
+                                                        format: format,
+                                                        fileName: document.fileName)
                 document.conversionStates[format] = .completed(outputURL)
             }
             conversionSubscriptions.removeValue(forKey: key)

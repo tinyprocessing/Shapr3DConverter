@@ -1,9 +1,9 @@
 import Combine
 import UIKit
 
-final class DocumentCell: UICollectionViewCell {
+final class DocumentGridCell: UICollectionViewCell {
     static let reuseIdentifier = Config.reuseIdentifier
-    private var document: DocumentItem?
+    private weak var document: DocumentItem?
     private var cancellables = Set<AnyCancellable>()
 
     private lazy var imageView: UIImageView = {
@@ -78,6 +78,13 @@ final class DocumentCell: UICollectionViewCell {
         setupCell()
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cancellables.removeAll()
+        document = nil
+        imageView.image = nil
+    }
+
     required init?(coder: NSCoder) { nil }
 
     private func setupCell() {
@@ -102,6 +109,7 @@ final class DocumentCell: UICollectionViewCell {
     }
 
     func configure(with item: DocumentItem) {
+        cancellables.removeAll()
         titleLabel.text = item.fileName
         document = item
 
@@ -189,7 +197,7 @@ final class DocumentCell: UICollectionViewCell {
     }
 }
 
-extension DocumentCell {
+extension DocumentGridCell {
     fileprivate enum Config {
         static let reuseIdentifier = "DocumentCell"
         static let cornerRadius: CGFloat = 8

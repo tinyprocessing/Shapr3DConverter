@@ -9,3 +9,11 @@
 
 "convert_to" = "Konvertálás {format} formátumba";
 "delete" = "Törlés";
+
+"kind" = "Típus";
+"shapr_document" = "Shapr dokumentum";
+"size" = "Méret";
+"created" = "Létrehozva";
+"modified" = "Módosítva";
+"last_opened" = "Legutóbb megnyitva";
+"unknown" = "Ismeretlen";

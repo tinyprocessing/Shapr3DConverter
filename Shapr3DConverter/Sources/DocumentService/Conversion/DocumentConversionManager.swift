@@ -1,7 +1,13 @@
 import Combine
 import Foundation
 
-final class DocumentConversionManager {
+protocol DocumentConversionManaging: AnyObject {
+    func cancelAllConversions(for document: DocumentItem)
+    func startConversion(for document: DocumentItem, format: ConversionFormat)
+    func cancelConversion(for document: DocumentItem, format: ConversionFormat)
+}
+
+final class DocumentConversionManager: DocumentConversionManaging {
     private let fileConverter: DocumentConversionEngine
     private var conversionSubscriptions: [ConversionKey: AnyCancellable] = [:]
 

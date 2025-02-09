@@ -3,7 +3,7 @@ import UIKit
 
 final class DocumentDetailViewController: UIViewController {
     private let document: DocumentItem
-    private let conversionManager: DocumentConversionManager
+    private let conversionManager: DocumentConversionManaging
     private var cancellables = Set<AnyCancellable>()
 
     private let scrollView: UIScrollView = {
@@ -35,7 +35,7 @@ final class DocumentDetailViewController: UIViewController {
         return stack
     }()
 
-    init(document: DocumentItem, conversionManager: DocumentConversionManager) {
+    init(document: DocumentItem, conversionManager: DocumentConversionManaging) {
         self.document = document
         self.conversionManager = conversionManager
         super.init(nibName: nil, bundle: nil)

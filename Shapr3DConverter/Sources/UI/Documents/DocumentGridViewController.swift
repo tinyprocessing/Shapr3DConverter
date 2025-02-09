@@ -13,14 +13,14 @@ final class DocumentGridViewController: BaseViewController {
     private var collectionView: UICollectionView!
     private var dataSource: UICollectionViewDiffableDataSource<Section, DocumentItem>!
     private var cancellables = Set<AnyCancellable>()
-    private let converterManager: DocumentConversionManager
+    private let converterManager: DocumentConversionManaging
 
     private lazy var emptyStateView = EmptyStateView(
         title: .localized(.empty_view_title),
         description: .localized(.empty_view_subtitle)
     )
 
-    init(converterManager: DocumentConversionManager) {
+    init(converterManager: DocumentConversionManaging) {
         self.converterManager = converterManager
         super.init(nibName: nil, bundle: nil)
     }
@@ -211,7 +211,7 @@ extension DocumentGridViewController: UIDropInteractionDelegate {
                 guard let self, let fileURL = urlData as? URL else { return }
 
                 DispatchQueue.main.async {
-                    if fileURL.pathExtension.lowercased() == Config.fileExtension {
+                    if fileURL.pathExtension.lowercased() == Constants.fileExtension {
                         self.documentDelegate?.didOpenFile(fileURL)
                     }
                 }
@@ -243,7 +243,6 @@ extension DocumentGridViewController {
             }
         }
 
-        static let fileExtension = "shapr"
         static let shaprUTI = "tinyprocessing.com.shapr3dconverter.shapr"
     }
 }

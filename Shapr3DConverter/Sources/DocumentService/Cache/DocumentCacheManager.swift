@@ -1,7 +1,12 @@
 import Combine
 import Foundation
 
-final class DocumentCacheManager {
+protocol DocumentCaching: AnyObject {
+    func saveDocuments(_ documents: [DocumentItem])
+    func restoreDocuments() -> [DocumentItem]
+}
+
+final class DocumentCacheManager: DocumentCaching {
     private let cacheFileName = ".documents_cache.json"
 
     // MARK: - Save Documents to Cache

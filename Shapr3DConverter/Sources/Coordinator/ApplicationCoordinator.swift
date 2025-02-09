@@ -7,7 +7,13 @@ class ApplicationCoordinator: Coordinator<Void> {
 
     init?(router: Router) {
         self.router = router
-        documentsCoordinator = DocumentsCoordinator(router: router)
+        documentsCoordinator = DocumentsCoordinator(
+            router: router,
+            conversionManager: DocumentConversionManager(fileConverter: DocumentConversionEngine()),
+            cachingService: DocumentCacheManager(),
+            fileStorageService: DocumentFileManager(),
+            documentPickerPresenter: DocumentPickerManager()
+        )
         super.init()
     }
 

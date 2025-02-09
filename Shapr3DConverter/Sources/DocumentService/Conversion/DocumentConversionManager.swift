@@ -8,7 +8,7 @@ protocol DocumentConversionManaging: AnyObject {
 }
 
 final class DocumentConversionManager: DocumentConversionManaging {
-    private let fileConverter: DocumentConversionEngine
+    private let fileConverter: FileConverterProtocol
     private var conversionSubscriptions: [ConversionKey: AnyCancellable] = [:]
 
     private struct ConversionKey: Hashable {
@@ -16,7 +16,7 @@ final class DocumentConversionManager: DocumentConversionManaging {
         let format: ConversionFormat
     }
 
-    init(fileConverter: DocumentConversionEngine) {
+    init(fileConverter: FileConverterProtocol) {
         self.fileConverter = fileConverter
     }
 

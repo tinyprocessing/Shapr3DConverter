@@ -7,7 +7,9 @@ enum ProgressAction {
 }
 
 protocol FileConverterProtocol {
-    func convertPublisher(from sourceURL: URL, to targetURL: URL) -> AnyPublisher<Double, Error>
+    func convertPublisher(from sourceURL: URL,
+                          to targetURL: URL) -> AnyPublisher<Double, Error>
+    func outputURL(for inputURL: URL, format: ConversionFormat, fileName: String) -> URL
 }
 
 final class DocumentConversionEngine: FileConverterProtocol {

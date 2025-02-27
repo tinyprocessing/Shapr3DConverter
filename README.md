@@ -1,5 +1,7 @@
 # Shapr3DConverter - Project Documentation
 
+🚩 Warning About This Company's Hiring Process 🚩 I completed a 4+ day take-home technical task for this company, only to be ignored for two weeks after submission, despite following up. Eventually, they rejected my application without meaningful feedback, showing a complete lack of respect for candidates' time and effort. If a company assigns an extensive unpaid task, the least they can do is provide timely updates and proper feedback. This experience raises serious red flags about their hiring process and professionalism. Engineers, be warned—your time is valuable, and you deserve better. 🚨
+
 ## Overview
 Shapr3DConverter is an iOS application designed for converting and managing documents in various formats. The project follows a structured architecture to maintain modularity, reusability, and scalability.
 
